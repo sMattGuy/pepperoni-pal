@@ -38,7 +38,7 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-let hourlyDrain = new cron.CronJob('* * * * *', () => {
+let hourlyDrain = new cron.CronJob('0 * * * *', () => {
 	if(pepperoni.alive == 1){
 		pepperoni.hunger -= Math.floor(Math.random()*3);
 		pepperoni.happiness -= Math.floor(Math.random()*2);
