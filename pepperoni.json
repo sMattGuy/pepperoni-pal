@@ -1,1 +1,1 @@
-{"alive":1,"generation":1,"startDate":1654319100758,"hunger":22,"happiness":13,"cleanliness":11,"sick":0,"deaths":[]}
+{"alive":0,"generation":1,"startDate":1654319100758,"hunger":30,"happiness":37,"cleanliness":4,"sick":0,"deaths":[{"generation":1,"cause":"overfed","person":"Gildian","birth":1654319100758,"time":1654321419131}]}

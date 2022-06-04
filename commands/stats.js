@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
+const { createNewPepperoni } = require('../helper.js')
 
 const hungerLevels = ["Starving","Hungry","Satisfied","Full","Bursting"];
 const happyLevels = ["Depressed","Upset","Neutral","Happy","Jovial"];

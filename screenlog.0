@@ -16,3 +16,18 @@ Error [INTERACTION_ALREADY_REPLIED]: The reply to this interaction has already b
 Ready
 ^CReady
 ^CReady
+ReferenceError: createNewPepperoni is not defined
+    at Object.execute (/home/mattguy/pepperoniPal/commands/stats.js:15:4)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:96:5)[39m
+    at async Client.<anonymous> (/home/mattguy/pepperoniPal/index.js:33:3)
+/home/mattguy/pepperoniPal/node_modules/discord.js/src/structures/interfaces/InteractionResponses.js:94
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
+                                             ^
+
+Error [INTERACTION_ALREADY_REPLIED]: The reply to this interaction has already been sent or deferred.
+    at CommandInteraction.reply (/home/mattguy/pepperoniPal/node_modules/[4mdiscord.js[24m/src/structures/interfaces/InteractionResponses.js:94:46)
+    at Client.<anonymous> (/home/mattguy/pepperoniPal/index.js:37:21)
+[90m    at processTicksAndRejections (node:internal/process/task_queues:96:5)[39m {
+  [[32mSymbol(code)[39m]: [32m'INTERACTION_ALREADY_REPLIED'[39m
+}
+Ready
