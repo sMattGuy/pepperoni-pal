@@ -12,7 +12,7 @@ module.exports = {
 		}
 		else{
 			pepperoni.cleanliness += Math.floor(Math.random()*4)+1;
-			pepperoni.happiness -= Math.floor(Math.random()*3)+1;
+			pepperoni.happiness -= Math.floor(Math.random()*2)+1;
 			await interaction.reply({content:`Pepperoni is a bit cleaner, but he didn't like the bath!`,files:['./images/wash.png']});
 		}
 		let death = checkDeathConditions(pepperoni);

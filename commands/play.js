@@ -11,7 +11,7 @@ module.exports = {
 			interaction.followUp({content:`The ${pepperoni.generation} pepperoni is born!`,files:['./images/born.png']});
 		}
 		else{
-			await interaction.reply({content:`Pepperoni has fun playing, but its made him a bit dirty and hungry!`,files:['./images/play.png']});
+			await interaction.reply({content:`Pepperoni had fun playing, but its made him a bit dirty and hungry!`,files:['./images/play.png']});
 			pepperoni.hunger -= Math.floor(Math.random()*3)+1;
 			pepperoni.happiness += Math.floor(Math.random()*6)+1;
 			pepperoni.cleanliness -= Math.floor(Math.random()*3)+1;

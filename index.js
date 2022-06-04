@@ -47,13 +47,13 @@ let hourlyDrain = new cron.CronJob('0 * * * *', () => {
 		}
 		if(pepperoni.hunger <= 5){
 			let randFood = foods[Math.floor(Math.random()*foods.length)];
-			client.channels.cache.get(mainChannel).send(`God I'm so fucking hungry I could go for some ${randFood}`);
+			client.channels.cache.get(mainChannel).send(`I'm hungwy -w- I weally want some ${randFood} -w-`);
 		}
 		if(pepperoni.happiness <= 5){
-			client.channels.cache.get(mainChannel).send(`I'm so fucking bored can we do something PLEASE.`);
+			client.channels.cache.get(mainChannel).send(`I'm vewy boawed -w-`);
 		}
 		if(pepperoni.sick > 0){
-			client.channels.cache.get(mainChannel).send(`I feel like shit.`);
+			client.channels.cache.get(mainChannel).send(`I fweel swick umu`);
 		}
 		let death = checkDeathConditions(pepperoni);
 		if(death.death){
