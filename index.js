@@ -5,6 +5,8 @@ const { checkDeathConditions, recordDeath, foods } = require('./helper.js');
 const cron = require('cron')
 const client = new Client({intents:[Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS]});
 
+const mainChannel = '119870239298027520';
+
 client.commands = new Collection();
 
 const rawpepperoni = fs.readFileSync('./pepperoni.json');
@@ -45,17 +47,17 @@ let hourlyDrain = new cron.CronJob('* * * * *', () => {
 		}
 		if(pepperoni.hunger <= 5){
 			let randFood = foods[Math.floor(Math.random()*foods.length)];
-			client.channels.cache.get('787576058332708876').send(`God I'm so fucking hungry I could go for some ${randFood}`);
+			client.channels.cache.get(mainChannel).send(`God I'm so fucking hungry I could go for some ${randFood}`);
 		}
 		if(pepperoni.happiness <= 5){
-			client.channels.cache.get('787576058332708876').send(`I'm so fucking bored can we do something PLEASE.`);
+			client.channels.cache.get(mainChannel).send(`I'm so fucking bored can we do something PLEASE.`);
 		}
 		if(pepperoni.sick > 0){
-			client.channels.cache.get('787576058332708876').send(`I feel like shit.`);
+			client.channels.cache.get(mainChannel).send(`I feel like shit.`);
 		}
 		let death = checkDeathConditions(pepperoni);
 		if(death.death){
-			client.channels.cache.get('787576058332708876').send({content:`Pepperoni has suffered from ${death.cause}. With his death, the thread of prophecy is severed. Revive Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`,files:[`./images/death_${death.cause}.png`]});
+			client.channels.cache.get(mainChannel).send({content:`Pepperoni has suffered from ${death.cause}. With his death, the thread of prophecy is severed. Revive Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`,files:[`./images/death_${death.cause}.png`]});
 			recordDeath(pepperoni, death.cause, "Everyone");
 		}
 		fs.writeFileSync('./pepperoni.json',JSON.stringify(pepperoni));
