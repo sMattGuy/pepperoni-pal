@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
+const { createNewPepperoni } = require('../helper.js')
 
 const { testClean,testHappiness,testHunger,testSick } = require('../helper.js');
 

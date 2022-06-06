@@ -30,7 +30,7 @@ module.exports = {
 					{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 					{name:`Sickness`, value:`${sickness}`, inline:true},
 				);
-			await interaction.reply({ embeds: [pepEmbed] });	
+			await interaction.reply({ embeds: [pepEmbed] });
 		}
 		let death = checkDeathConditions(pepperoni);
 		if(death.death){

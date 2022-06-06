@@ -16,7 +16,7 @@ module.exports = {
 			//perform calculations on action
 			pepperoni.hunger -= Math.floor(Math.random()*3)+1;
 			pepperoni.happiness += Math.floor(Math.random()*6)+1;
-			pepperoni.cleanliness -= Math.floor(Math.random()*3)+1;
+			pepperoni.cleanliness -= Math.floor(Math.random()*6)+1;
 			if(Math.random() <= 0.05){
 				pepperoni.sick += 1;
 				descriptionContents += '\n(He also seems to have a cough?)');
