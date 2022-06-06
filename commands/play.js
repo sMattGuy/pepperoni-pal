@@ -14,7 +14,7 @@ module.exports = {
 			await interaction.reply({content:`Pepperoni had fun playing, but its made him a bit dirty and hungry!`,files:['./images/play.png']});
 			pepperoni.hunger -= Math.floor(Math.random()*3)+1;
 			pepperoni.happiness += Math.floor(Math.random()*6)+1;
-			pepperoni.cleanliness -= Math.floor(Math.random()*3)+1;
+			pepperoni.cleanliness -= Math.floor(Math.random()*6)+1;
 			if(Math.random() <= 0.05){
 				pepperoni.sick += 1;
 				interaction.followUp('(He also seems to have a cough?)');

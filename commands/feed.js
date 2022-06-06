@@ -11,8 +11,7 @@ module.exports = {
 			interaction.followUp({content:`The ${pepperoni.generation} pepperoni is born!`,files:['./images/born.png']});
 		}
 		else{
-			pepperoni.hunger += Math.floor(Math.random()*5)+1;
-			pepperoni.happiness += Math.floor(Math.random()*2)+1;
+			pepperoni.hunger += Math.floor(Math.random()*6)+1;
 			await interaction.reply({content:`Pepperoni enjoyed a nice meal!`,files:['./images/eating.png']});
 		}
 		let death = checkDeathConditions(pepperoni);
