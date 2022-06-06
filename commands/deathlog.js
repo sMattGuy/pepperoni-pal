@@ -1,5 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Formatters } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('deathlog')
@@ -11,7 +13,7 @@ module.exports = {
 			for(let i=0;i<pepperoni.deaths.length;i++){
 				let deathDay = new Date(pepperoni.deaths[i].time);
 				let birthday = new Date(pepperoni.deaths[i].birth);
-				let potMessage = `Gen. ${pepperoni.deaths[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${pepperoni.deaths[i].cause}, because of ${pepperoni.deaths[i].person}\n`;
+				let potMessage = `${pepperoni.deaths[i].name}, Gen. ${pepperoni.deaths[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${pepperoni.deaths[i].cause}, because of ${pepperoni.deaths[i].person}\n`;
 				if(potMessage.length + message.length >= 2000){
 					interaction.followUp({content:Formatters.codeBlock(message)});
 					message = "";
@@ -21,7 +23,7 @@ module.exports = {
 			interaction.followUp({content:Formatters.codeBlock(message)});
 		}
 		else{
-			interaction.reply(`Pepperoni hasn't died! You're doing great!`);
+			interaction.reply(`No Pepperoni has died! You're doing great!`);
 		}
 	},
 };

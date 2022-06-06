@@ -57,7 +57,7 @@ let hourlyDrain = new cron.CronJob('0 * * * *', () => {
 		}
 		let death = checkDeathConditions(pepperoni);
 		if(death.death){
-			client.channels.cache.get(mainChannel).send({content:`Pepperoni has suffered from ${death.cause}. With his death, the thread of prophecy is severed. Revive Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`,files:[`./images/death_${death.cause}.png`]});
+			client.channels.cache.get(mainChannel).send({content:`${pepperoni.name} has suffered from ${death.cause}. With his death, the thread of prophecy is severed. Revive Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`,files:[`./images/death_${death.cause}.png`]});
 			recordDeath(pepperoni, death.cause, "Everyone");
 		}
 		fs.writeFileSync('./pepperoni.json',JSON.stringify(pepperoni));

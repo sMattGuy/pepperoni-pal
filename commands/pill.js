@@ -1,14 +1,14 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { createNewPepperoni, checkDeathConditions, recordDeath } = require('../helper.js');
+const { createNewPepperoni, checkDeathConditions, recordDeath,testClean,testHappiness,testHunger,testSick } = require('../helper.js');
+const { MessageEmbed } = require('discord.js');
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('pill')
 		.setDescription('Give pepperoni a pill when he\'s feeling sick!'),
 	async execute(interaction, pepperoni) {
 		if(pepperoni.alive == 0){
-			await interaction.reply(`Looks like Pepperoni isn't alive right now. Let me reincarnate him quickly...`);
-			createNewPepperoni(pepperoni);
-			interaction.followUp({content:`The ${pepperoni.generation} pepperoni is born!`,files:['./images/born.png']});
+			createNewPepperoni(pepperoni, interaction);
 		}
 		else{
 			if(pepperoni.sick == 0){
@@ -17,7 +17,25 @@ module.exports = {
 			else{
 				pepperoni.sick = 0;
 				pepperoni.hunger += 1;
-				await interaction.reply({content:`Pepperoni took the cheese pill and feels better!`,files:['./images/pill.png']});
+				
+				//get flavor text for pepperoni
+				let hunger = testHunger(pepperoni.hunger);
+				let happiness = testHappiness(pepperoni.happiness);
+				let cleanliness = testClean(pepperoni.cleanliness);
+				let sickness = testSick(pepperoni.sick);
+				//design embed
+				const pepEmbed = new MessageEmbed()
+					.setColor('#F099C8')
+					.setTitle(`Get well soon ${pepperoni.name}!`)
+					.setDescription(`${pepperoni.name} took the cheese pill and feels better!`)
+					.setThumbnail('./images/pill.png')
+					.addFields(
+						{name:`Hunger`, value:`${hunger}`, inline:true},
+						{name:`Happiness`, value:`${happiness}`, inline:true},
+						{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
+						{name:`Sickness`, value:`${sickness}`, inline:true},
+					);
+				await interaction.reply({ embeds: [pepEmbed] });	
 			}
 		}
 		let death = checkDeathConditions(pepperoni);
