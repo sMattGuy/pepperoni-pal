@@ -11,7 +11,7 @@ module.exports = {
 			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
-			pepperoni.hunger += Math.floor(Math.random()*5)+1;
+			pepperoni.hunger += Math.floor(Math.random()*6)+10;
 			
 			//get flavor text for pepperoni
 			let hunger = testHunger(pepperoni.hunger);

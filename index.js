@@ -40,8 +40,8 @@ client.on('interactionCreate', async interaction => {
 
 let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 	if(pepperoni.alive == 1){
-		pepperoni.hunger -= Math.floor(Math.random()*3)+1;
-		pepperoni.happiness -= Math.floor(Math.random()*3)+1;
+		pepperoni.hunger -= Math.floor(Math.random()*5)+1;
+		pepperoni.happiness -= Math.floor(Math.random()*5)+1;
 		if(Math.random() <= 0.05){
 			pepperoni.sick++;
 		}
