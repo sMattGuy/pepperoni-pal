@@ -4,8 +4,8 @@ const {token} = require('./config.json');
 const { hasDied, foods } = require('./helper.js');
 const cron = require('cron')
 const client = new Client({intents:[Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS]});
-//119870239298027520
-const mainChannel = '787576058332708876';
+
+const mainChannel = '119870239298027520';
 
 client.commands = new Collection();
 
@@ -38,7 +38,7 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-let hourlyDrain = new cron.CronJob('* * * * *', async () => {
+let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 	if(pepperoni.alive == 1){
 		pepperoni.hunger -= Math.floor(Math.random()*3)+1;
 		pepperoni.happiness -= Math.floor(Math.random()*3)+1;

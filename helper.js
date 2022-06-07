@@ -1,6 +1,6 @@
 const { MessageAttachment, MessageEmbed } = require('discord.js');
 const fs = require('node:fs');
-const mainChannel = '787576058332708876';
+const mainChannel = '119870239298027520';
 /*
 IMAGE LINKS
 born	https://i.imgur.com/LoHGf48.png
