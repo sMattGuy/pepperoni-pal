@@ -25,7 +25,7 @@ deathMap.set('sick', 'https://i.imgur.com/HB92e4s.png');
 deathMap.set('starved', 'https://i.imgur.com/vFb6u46.png');
 deathMap.set('unhappy', 'https://i.imgur.com/ARYRMcm.png');
 
-const petNames = ["Pepperoni","Dusty","Rocky","Miffy","Bosco","Walter","Chanel","Bruno","Morbius","Pebbles","Guava Flame","Poopy","Momo","Dumbass","Misty","Joji","Fred","Throwback"];
+const petNames = ["Pepperoni","Dusty","Rocky","Miffy","Bosco","Walter","Chanel","Bruno","Morbius","Pebbles","Guava Flame","Poopy","Momo","Dumbass","Misty","Joji","Fred","Throwback","Cooper","Stinky","Gordon","Jessie","Steve","Ian","Gildian","Peter","Matt","Dan"];
 async function createNewPepperoni(pepperoni, interaction){
 	await interaction.reply(`Looks like There isn't a Pepperoni alive right now. Let me reincarnate him quickly...`);
 	
