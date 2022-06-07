@@ -6,7 +6,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('play')
 		.setDescription('Lets you play with Pepperoni!'),
-	async execute(interaction, pepperoni) {
+	async execute(interaction, pepperoni, deaths) {
 		if(pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
 		}
@@ -40,6 +40,6 @@ module.exports = {
 				);
 				await interaction.reply({ embeds: [pepEmbed] });
 		}
-		await hasDied(pepperoni, interaction, false, interaction.user.username);
+		await hasDied(pepperoni, interaction, false, interaction.user.username, deaths);
 	},
 };
