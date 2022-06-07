@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const {Client, Collection, Intents} = require('discord.js');
 const {token} = require('./config.json');
-const { checkDeathConditions, recordDeath, foods } = require('./helper.js');
+const { hasDied, foods } = require('./helper.js');
 const cron = require('cron')
 const client = new Client({intents:[Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS]});
 
@@ -34,11 +34,11 @@ client.on('interactionCreate', async interaction => {
 		fs.writeFileSync('./pepperoni.json',JSON.stringify(pepperoni));
 	} catch(error){
 		console.error(error);
-		await interaction.reply({content:'There was an error with this command!',ephemeral:true});
+		await interaction.followUp({content:'There was an error with this command!',ephemeral:true});
 	}
 });
 
-let hourlyDrain = new cron.CronJob('0 * * * *', () => {
+let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 	if(pepperoni.alive == 1){
 		pepperoni.hunger -= Math.floor(Math.random()*3)+1;
 		pepperoni.happiness -= Math.floor(Math.random()*3)+1;
@@ -47,19 +47,17 @@ let hourlyDrain = new cron.CronJob('0 * * * *', () => {
 		}
 		if(pepperoni.hunger <= 5){
 			let randFood = foods[Math.floor(Math.random()*foods.length)];
-			client.channels.cache.get(mainChannel).send(`I'm hungwy -w- I weally want some ${randFood} -w-`);
+			await client.channels.cache.get(mainChannel).send(`I'm hungwy -w- I weally want some ${randFood} -w-`);
 		}
 		if(pepperoni.happiness <= 5){
-			client.channels.cache.get(mainChannel).send(`I'm vewy boawed -w-`);
+			await client.channels.cache.get(mainChannel).send(`I'm vewy boawed -w-`);
 		}
 		if(pepperoni.sick > 0){
-			client.channels.cache.get(mainChannel).send(`I fweel swick umu`);
+			await client.channels.cache.get(mainChannel).send(`I fweel swick umu`);
 		}
-		let death = checkDeathConditions(pepperoni);
-		if(death.death){
-			client.channels.cache.get(mainChannel).send({content:`Pepperoni has suffered from ${death.cause}. With his death, the thread of prophecy is severed. Revive Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`,files:[`./images/death_${death.cause}.png`]});
-			recordDeath(pepperoni, death.cause, "Everyone");
-		}
+		
+		await hasDied(pepperoni, client, true, "Everyone");
+		
 		fs.writeFileSync('./pepperoni.json',JSON.stringify(pepperoni));
 	}
 });
