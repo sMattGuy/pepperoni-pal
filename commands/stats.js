@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
-const { createNewPepperoni } = require('../helper.js')
-
-const { testClean,testHappiness,testHunger,testSick } = require('../helper.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { createNewPepperoni,testClean,testHappiness,testHunger,testSick} = require('../helper.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -10,7 +8,7 @@ module.exports = {
 		.setDescription('Shows you Pepperoni\'s stats!'),
 	async execute(interaction, pepperoni) {
 		if(pepperoni.alive == 0){
-			createNewPepperoni(pepperoni, interaction);
+			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
 			let birthday = new Date(pepperoni.startDate);
@@ -23,6 +21,7 @@ module.exports = {
 				.setColor('#F099C8')
 				.setTitle(`${pepperoni.name} Stats`)
 				.setDescription(`${pepperoni.name}, Gen. ${pepperoni.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`)
+				.setThumbnail('https://i.imgur.com/PRcSnWE.png')
 				.addFields(
 					{name:`Hunger`, value:`${hunger}`, inline:true},
 					{name:`Happiness`, value:`${happiness}`, inline:true},

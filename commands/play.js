@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { createNewPepperoni, checkDeathConditions, recordDeath,testClean,testHappiness,testHunger,testSick } = require('../helper.js');
-const { MessageEmbed } = require('discord.js');
+const { createNewPepperoni, hasDied,testClean,testHappiness,testHunger,testSick } = require('../helper.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,7 +8,7 @@ module.exports = {
 		.setDescription('Lets you play with Pepperoni!'),
 	async execute(interaction, pepperoni) {
 		if(pepperoni.alive == 0){
-			createNewPepperoni(pepperoni, interaction);
+			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
 			//define description since this one is dynamic
@@ -19,7 +19,7 @@ module.exports = {
 			pepperoni.cleanliness -= Math.floor(Math.random()*6)+1;
 			if(Math.random() <= 0.05){
 				pepperoni.sick += 1;
-				descriptionContents += '\n(He also seems to have a cough?)');
+				descriptionContents += '\n(He also seems to have a cough?)';
 			}
 			//get flavor text for pepperoni
 			let hunger = testHunger(pepperoni.hunger);
@@ -31,7 +31,7 @@ module.exports = {
 				.setColor('#F099C8')
 				.setTitle('A day at the park!')
 				.setDescription(descriptionContents)
-				.setThumbnail('./images/play.png')
+				.setThumbnail('https://i.imgur.com/U9CQXvL.png')
 				.addFields(
 					{name:`Hunger`, value:`${hunger}`, inline:true},
 					{name:`Happiness`, value:`${happiness}`, inline:true},
@@ -40,10 +40,6 @@ module.exports = {
 				);
 				await interaction.reply({ embeds: [pepEmbed] });
 		}
-		let death = checkDeathConditions(pepperoni);
-		if(death.death){
-			await interaction.followUp({content:`Pepperoni has suffered from ${death.cause}. With his death, the thread of prophecy is severed. Revive Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`,files:[`./images/death_${death.cause}.png`]});
-			recordDeath(pepperoni, death.cause, interaction.user.username);
-		}
+		await hasDied(pepperoni, interaction, false, interaction.user.username);
 	},
 };

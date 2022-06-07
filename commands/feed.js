@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { createNewPepperoni, checkDeathConditions, recordDeath,testClean,testHappiness,testHunger,testSick } = require('../helper.js');
-const { MessageEmbed } = require('discord.js');
+const { createNewPepperoni, hasDied,testClean,testHappiness,testHunger,testSick } = require('../helper.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,7 +8,7 @@ module.exports = {
 		.setDescription('Lets you feed Pepperoni!'),
 	async execute(interaction, pepperoni) {
 		if(pepperoni.alive == 0){
-			createNewPepperoni(pepperoni, interaction);
+			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
 			pepperoni.hunger += Math.floor(Math.random()*5)+1;
@@ -23,7 +23,7 @@ module.exports = {
 				.setColor('#F099C8')
 				.setTitle(`Dinner time!`)
 				.setDescription(`${pepperoni.name} enjoyed a nice meal!`)
-				.setThumbnail('./images/eating.png')
+				.setThumbnail('https://i.imgur.com/6Du3IQg.png')
 				.addFields(
 					{name:`Hunger`, value:`${hunger}`, inline:true},
 					{name:`Happiness`, value:`${happiness}`, inline:true},
@@ -32,10 +32,6 @@ module.exports = {
 				);
 			await interaction.reply({ embeds: [pepEmbed] });	
 		}
-		let death = checkDeathConditions(pepperoni);
-		if(death.death){
-			interaction.followUp({content:`Pepperoni has suffered from ${death.cause}. With his death, the thread of prophecy is severed. Revive Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`,files:[`./images/death_${death.cause}.png`]});
-			recordDeath(pepperoni, death.cause, interaction.user.username);
-		}
+		await hasDied(pepperoni, interaction, false, interaction.user.username);
 	},
 };
