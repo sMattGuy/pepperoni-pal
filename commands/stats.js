@@ -6,7 +6,7 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stats')
 		.setDescription('Shows you Pepperoni\'s stats!'),
-	async execute(interaction, pepperoni) {
+	async execute(interaction, pepperoni, deaths) {
 		if(pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
 		}

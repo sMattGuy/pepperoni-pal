@@ -1,5 +1,4 @@
 const { MessageAttachment, MessageEmbed } = require('discord.js');
-const fs = require('node:fs');
 const mainChannel = '119870239298027520';
 /*
 IMAGE LINKS
@@ -55,12 +54,12 @@ async function createNewPepperoni(pepperoni, interaction){
 			{name:`Sickness`, value:`${sickness}`, inline:true},
 		);
 		await interaction.followUp({ embeds: [pepEmbed] });
-		fs.writeFileSync('./pepperoni.json',JSON.stringify(pepperoni));
+		pepperoni.save();
 }
-async function hasDied(pepperoni, interaction, everyonesfault, person){
+async function hasDied(pepperoni, interaction, everyonesfault, person, deaths){
 	let results = checkDeathConditions(pepperoni);
 	if(results.death){
-		recordDeath(pepperoni, results.cause, person);
+		await recordDeath(pepperoni, results.cause, person, deaths);
 		const pepEmbed = new MessageEmbed()
 			.setColor('#FF2222')
 			.setTitle('Game Over!')
@@ -73,20 +72,18 @@ async function hasDied(pepperoni, interaction, everyonesfault, person){
 		else{
 			await interaction.followUp({ embeds: [pepEmbed] });
 		}
-		fs.writeFileSync('./pepperoni.json',JSON.stringify(pepperoni));
 	}
 }
-function recordDeath(pepperoni, causeOfDeath, person){
+async function recordDeath(pepperoni, causeOfDeath, person, deaths){
 	pepperoni.alive = 0;
-	let death = {
-		"name": pepperoni.name,
+	await deaths.create({ 
+		"name":pepperoni.name,
 		"generation":pepperoni.generation,
 		"cause":causeOfDeath,
 		"person":person,
 		"birth":pepperoni.startDate,
 		"time":Date.now()
-	}
-	pepperoni.deaths.push(death);
+	});
 }
 function checkDeathConditions(pepperoni){
 	if(pepperoni.hunger <= 0){

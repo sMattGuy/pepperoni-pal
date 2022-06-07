@@ -6,14 +6,16 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('deathlog')
 		.setDescription('Shows the deaths Pepperoni has gone through...'),
-	async execute(interaction, pepperoni) {
-		if(pepperoni.deaths.length != 0){
+	async execute(interaction, pepperoni, deaths) {
+		let results = await deaths.findAll({order:[['id']]});
+		let pepDeaths = JSON.parse(JSON.stringify(results, null, 2));
+		if(pepDeaths.length != 0){
 			await interaction.reply("Pepperoni Deaths");
 			let message = "";
-			for(let i=0;i<pepperoni.deaths.length;i++){
-				let deathDay = new Date(pepperoni.deaths[i].time);
-				let birthday = new Date(pepperoni.deaths[i].birth);
-				let potMessage = `${pepperoni.deaths[i].name}, Gen. ${pepperoni.deaths[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${pepperoni.deaths[i].cause}, because of ${pepperoni.deaths[i].person}\n`;
+			for(let i=0;i<pepDeaths.length;i++){
+				let deathDay = new Date(pepDeaths[i].time);
+				let birthday = new Date(pepDeaths[i].birth);
+				let potMessage = `${pepDeaths[i].name}, Gen. ${pepDeaths[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${pepDeaths[i].cause}, because of ${pepDeaths[i].person}\n`;
 				if(potMessage.length + message.length >= 2000){
 					interaction.followUp({content:Formatters.codeBlock(message)});
 					message = "";
