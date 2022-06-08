@@ -67,7 +67,12 @@ async function hasDied(pepperoni, interaction, everyonesfault, person, deaths){
 			.setThumbnail(deathMap.get(results.cause));
 		
 		if(everyonesfault){
-			await interaction.channels.cache.get(mainChannel).send({ embeds: [pepEmbed] });
+			try{
+				await interaction.channels.cache.get(mainChannel).send({ embeds: [pepEmbed] });
+			}
+			catch(error){
+				console.log(error)
+			}
 		}
 		else{
 			await interaction.followUp({ embeds: [pepEmbed] });
