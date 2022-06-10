@@ -38,7 +38,7 @@ module.exports = {
 					{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 					{name:`Sickness`, value:`${sickness}`, inline:true},
 				);
-			await interaction.reply({ embeds: [pepEmbed],ephemeral:true });
+			await interaction.reply({ embeds: [pepEmbed] });
 			await hasDied(pepperoni, interaction, false, deaths);
 		}
 	},

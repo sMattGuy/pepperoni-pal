@@ -17,15 +17,15 @@ module.exports = {
 				let birthday = new Date(pepDeaths[i].birth);
 				let potMessage = `${pepDeaths[i].name}, Gen. ${pepDeaths[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${pepDeaths[i].cause}, because of ${pepDeaths[i].person}\n`;
 				if(potMessage.length + message.length >= 2000){
-					await interaction.followUp({content:Formatters.codeBlock(message),ephemeral:true});
+					await interaction.followUp({content:Formatters.codeBlock(message)});
 					message = "";
 				}
 				message += potMessage;
 			}
-			await interaction.followUp({content:Formatters.codeBlock(message),ephemeral:true});
+			await interaction.followUp({content:Formatters.codeBlock(message)});
 		}
 		else{
-			await interaction.reply({content:`No Pepperoni has died! You're doing great!`,ephemeral:true});
+			await interaction.reply({content:`No Pepperoni has died! You're doing great!`});
 		}
 	},
 };

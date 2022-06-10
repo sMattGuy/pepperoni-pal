@@ -28,7 +28,7 @@ module.exports = {
 					{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 					{name:`Sickness`, value:`${sickness}`, inline:true},
 				);
-				interaction.reply({embeds:[pepEmbed],ephemeral:true});
+				interaction.reply({embeds:[pepEmbed]});
 		}
 	},
 };
