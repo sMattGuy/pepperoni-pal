@@ -13,8 +13,6 @@ const force = process.argv.includes('--force') || process.argv.includes('-f');
 
 sequelize.sync({ force }).then(async () => {
 	
-	await pep.upsert({"activePepperoni":1,"alive":0,"name":"missingno","generation":0,"startDate":0,"hunger":0,"happiness":0,"cleanliness":0,"sick":0});
-	
 	console.log('Database synced');
 
 	sequelize.close();

@@ -7,12 +7,12 @@ module.exports = {
 		.setName('pill')
 		.setDescription('Give pepperoni a pill when he\'s feeling sick!'),
 	async execute(interaction, pepperoni, deaths) {
-		if(pepperoni.alive == 0){
+		if(!pepperoni || pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
 			if(pepperoni.sick == 0){
-				interaction.reply(`Pepperoni isn't sick, so he doesn't need medicine!`);
+				interaction.reply({content:`Pepperoni isn't sick, so he doesn't need medicine!`,ephemeral:true});
 			}
 			else{
 				pepperoni.sick = 0;
@@ -28,16 +28,16 @@ module.exports = {
 					.setColor('#F099C8')
 					.setTitle(`Get well soon ${pepperoni.name}!`)
 					.setDescription(`${pepperoni.name} took the cheese pill and feels better!`)
-					.setThumbnail('https://i.imgur.com/K1q6bKC.png')
+					.setThumbnail('https://www.imgur.com/K1q6bKC.png')
 					.addFields(
 						{name:`Hunger`, value:`${hunger}`, inline:true},
 						{name:`Happiness`, value:`${happiness}`, inline:true},
 						{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 						{name:`Sickness`, value:`${sickness}`, inline:true},
 					);
-				await interaction.reply({ embeds: [pepEmbed] });	
+				await interaction.reply({ embeds: [pepEmbed],ephemeral:true });	
 			}
+			await hasDied(pepperoni, interaction, false, deaths);
 		}
-		await hasDied(pepperoni, interaction, false, interaction.user.username, deaths);
 	},
 };

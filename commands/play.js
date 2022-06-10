@@ -7,7 +7,7 @@ module.exports = {
 		.setName('play')
 		.setDescription('Lets you play with Pepperoni!'),
 	async execute(interaction, pepperoni, deaths) {
-		if(pepperoni.alive == 0){
+		if(!pepperoni || pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
@@ -31,15 +31,15 @@ module.exports = {
 				.setColor('#F099C8')
 				.setTitle('A day at the park!')
 				.setDescription(descriptionContents)
-				.setThumbnail('https://i.imgur.com/U9CQXvL.png')
+				.setThumbnail('https://www.imgur.com/U9CQXvL.png')
 				.addFields(
 					{name:`Hunger`, value:`${hunger}`, inline:true},
 					{name:`Happiness`, value:`${happiness}`, inline:true},
 					{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 					{name:`Sickness`, value:`${sickness}`, inline:true},
 				);
-				await interaction.reply({ embeds: [pepEmbed] });
+			await interaction.reply({ embeds: [pepEmbed],ephemeral:true });
+			await hasDied(pepperoni, interaction, false, deaths);
 		}
-		await hasDied(pepperoni, interaction, false, interaction.user.username, deaths);
 	},
 };

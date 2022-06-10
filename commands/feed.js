@@ -7,7 +7,7 @@ module.exports = {
 		.setName('feed')
 		.setDescription('Lets you feed Pepperoni!'),
 	async execute(interaction, pepperoni, deaths) {
-		if(pepperoni.alive == 0){
+		if(!pepperoni || pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
@@ -23,15 +23,15 @@ module.exports = {
 				.setColor('#F099C8')
 				.setTitle(`Dinner time!`)
 				.setDescription(`${pepperoni.name} enjoyed a nice meal!`)
-				.setThumbnail('https://i.imgur.com/6Du3IQg.png')
+				.setThumbnail('https://www.imgur.com/6Du3IQg.png')
 				.addFields(
 					{name:`Hunger`, value:`${hunger}`, inline:true},
 					{name:`Happiness`, value:`${happiness}`, inline:true},
 					{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 					{name:`Sickness`, value:`${sickness}`, inline:true},
 				);
-			await interaction.reply({ embeds: [pepEmbed] });	
+			await interaction.reply({ embeds: [pepEmbed], ephemeral:true });	
+			await hasDied(pepperoni, interaction, false, deaths);
 		}
-		await hasDied(pepperoni, interaction, false, interaction.user.username, deaths);
 	},
 };

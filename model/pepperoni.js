@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
 	return sequelize.define('pepperoni', {
-		activePepperoni: {
-			type: DataTypes.INTEGER,
+		userid: {
+			type: DataTypes.STRING,
 			primaryKey: true,
 		},
 		alive: {
@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		generation: {
 			type: DataTypes.INTEGER,
+			defaultValue: 0,
 		},
 		startDate: {
 			type: DataTypes.INTEGER,

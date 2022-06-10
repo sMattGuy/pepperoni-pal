@@ -29,9 +29,10 @@ client.on('interactionCreate', async interaction => {
 	const command = client.commands.get(interaction.commandName);
 	if(!command) return;
 	try{
-		const pepperoniTag = await pepperoni.findOne({where:{"activePepperoni":1}});
+		const pepperoniTag = await pepperoni.findOne({where:{"userid":interaction.user.id}});
 		await command.execute(interaction, pepperoniTag, deaths);
-		pepperoniTag.save();
+		if(interaction.commandName != 'deathlog' && pepperoniTag)
+			pepperoniTag.save();
 	} catch(error){
 		console.error(error);
 		await interaction.followUp({content:'There was an error with this command!',ephemeral:true});
@@ -39,27 +40,34 @@ client.on('interactionCreate', async interaction => {
 });
 
 let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
-	const pepperoniTag = await pepperoni.findOne({where:{"activePepperoni":1}});
-	if(pepperoniTag.alive == 1){
-		pepperoniTag.hunger -= Math.floor(Math.random()*5)+1;
-		pepperoniTag.happiness -= Math.floor(Math.random()*5)+1;
-		if(Math.random() <= 0.05){
-			pepperoniTag.sick++;
+	const pepperoniTag = await pepperoni.findAll();
+	for(let i=0;i<pepperoniTag.length;i++){
+		if(pepperoniTag[i].alive == 1){
+			try{
+				let pepperoniOwner = await client.users.fetch(pepperoniTag[i].userid);
+				pepperoniTag[i].hunger -= Math.floor(Math.random()*2)+1;
+				pepperoniTag[i].happiness -= Math.floor(Math.random()*2)+1;
+				if(Math.random() <= 0.05){
+					pepperoniTag[i].sick++;
+				}
+				if(pepperoniTag[i].hunger <= 5){
+					let randFood = foods[Math.floor(Math.random()*foods.length)];
+					await pepperoniOwner.send(`I'm hungwy -w- I weally want some ${randFood} -w-`);
+				}
+				if(pepperoniTag[i].happiness <= 5){
+					await pepperoniOwner.send(`I'm vewy boawed -w-`);
+				}
+				if(pepperoniTag[i].sick > 0){
+					await pepperoniOwner.send(`I fweel swick umu`);
+				}
+				await hasDied(pepperoniTag[i], pepperoniOwner, true, deaths);
+				
+				pepperoniTag[i].save();
+			}
+			catch(err){
+				console.log(err);
+			}
 		}
-		if(pepperoniTag.hunger <= 5){
-			let randFood = foods[Math.floor(Math.random()*foods.length)];
-			await client.channels.cache.get(mainChannel).send(`I'm hungwy -w- I weally want some ${randFood} -w-`);
-		}
-		if(pepperoniTag.happiness <= 5){
-			await client.channels.cache.get(mainChannel).send(`I'm vewy boawed -w-`);
-		}
-		if(pepperoniTag.sick > 0){
-			await client.channels.cache.get(mainChannel).send(`I fweel swick umu`);
-		}
-		
-		await hasDied(pepperoniTag, client, true, "Everyone", deaths);
-		
-		pepperoniTag.save();
 	}
 });
 hourlyDrain.start();
