@@ -31,7 +31,7 @@ deathMap.set('lostRPS', 'https://www.imgur.com/2DZ1ORN.png');
 
 const petNames = ["Pepperoni","Dusty","Rocky","Miffy","Bosco","Walter","Chanel","Bruno","Morbius","Pebbles","Guava Flame","Poopy","Momo","Dumbass","Misty","Joji","Fred","Throwback","Cooper","Stinky","Gordon","Jessie","Steve","Ian","Gildian","Peter","Matt","Dan"];
 async function createNewPepperoni(pepperoniTag, interaction){
-	await interaction.reply({content:`Looks like There isn't a Pepperoni alive right now. Let me reincarnate him quickly...`,ephemeral:true});
+	await interaction.reply({content:`Looks like There isn't a Pepperoni alive right now. Let me reincarnate him quickly...`});
 	let generation = 1;
 	if(pepperoniTag){
 		generation = pepperoniTag.generation + 1;
@@ -65,7 +65,7 @@ async function createNewPepperoni(pepperoniTag, interaction){
 			{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 			{name:`Sickness`, value:`${sickness}`, inline:true},
 		);
-	await interaction.followUp({ embeds: [pepEmbed], ephemeral:true });
+	await interaction.followUp({ embeds: [pepEmbed]});
 	pepperoniTag.save();
 }
 async function lostGame(pepperoniTag, interaction, deaths, gameName){
@@ -76,7 +76,7 @@ async function lostGame(pepperoniTag, interaction, deaths, gameName){
 		.setDescription(`${pepperoniTag.name} has suffered from ${gameName}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
 		.setThumbnail(deathMap.get(gameName));
 	
-	await interaction.send({ embeds: [pepEmbed],ephemeral:true }).catch(err => {console.log(err)});
+	await interaction.send({ embeds: [pepEmbed]}).catch(err => {console.log(err)});
 }
 async function hasDied(pepperoniTag, interaction, hourly, deaths){
 	let results = checkDeathConditions(pepperoniTag);
@@ -90,14 +90,14 @@ async function hasDied(pepperoniTag, interaction, hourly, deaths){
 		
 		if(hourly){
 			try{
-				await interaction.send({ embeds: [pepEmbed],ephemeral:true });
+				await interaction.send({ embeds: [pepEmbed]});
 			}
 			catch(error){
 				console.log(error)
 			}
 		}
 		else{
-			await interaction.followUp({ embeds: [pepEmbed],ephemeral:true });
+			await interaction.followUp({ embeds: [pepEmbed]});
 		}
 	}
 }
