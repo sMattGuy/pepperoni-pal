@@ -45,6 +45,7 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 		if(pepperoniTag[i].alive == 1){
 			try{
 				let pepperoniOwner = await client.users.fetch(pepperoniTag[i].userid);
+				let prevSickness = pepperoniTag[i].sick;
 				pepperoniTag[i].hunger -= Math.floor(Math.random()*2)+1;
 				pepperoniTag[i].happiness -= Math.floor(Math.random()*2)+1;
 				if(Math.random() <= 0.05){
@@ -57,7 +58,7 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 				if(pepperoniTag[i].happiness <= 5){
 					await pepperoniOwner.send(`I'm vewy boawed -w-`);
 				}
-				if(pepperoniTag[i].sick > 0){
+				if(prevSickness != pepperoniTag[i].sick){
 					await pepperoniOwner.send(`I fweel swick umu`);
 				}
 				await hasDied(pepperoniTag[i], pepperoniOwner, true, deaths);
