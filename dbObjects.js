@@ -13,7 +13,19 @@ const personality = require('./model/personality.js')(sequelize, Sequelize.DataT
 
 Reflect.defineProperty(pepperoni.prototype, 'getStats', {
 	value: pepperoniTag => {
-		return stats.findOne({where:{userid: pepperoniTag.userid}});
+		let statsFound = await stats.findOne({where:{userid: pepperoniTag.userid}});
+		if(statsFound){
+			return statsFound;
+		}
+		return stats.create({
+			userid:pepperoniTag.userid,
+			level:1,
+			experience:0,
+			nextLevel:20,
+			attack:0,
+			defense:0,
+			evade:0
+		});
 	},
 });
 Reflect.defineProperty(pepperoni.prototype, 'setStats', {
@@ -28,7 +40,15 @@ Reflect.defineProperty(pepperoni.prototype, 'setStats', {
 			currStats.evade = newStats.evade;
 			return currStats.save();
 		}
-		return stats.create({userid:pepperoniTag.userid,level:1,experience:0,nextLevel:20,attack:0,defense:0,evade:0});
+		return stats.create({
+			userid:pepperoniTag.userid,
+			level:newStats.level,
+			experience:newStats.experience,
+			nextLevel:newStats.nextLevel,
+			attack:newStats.attack,
+			defense:newStats.defense,
+			evade:newStats.evade
+		});
 	},
 });
 Reflect.defineProperty(pepperoni.prototype, 'getPersonality', {

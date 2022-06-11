@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageActionRow, MessageButton, MessageAttachment } = require('discord.js');
+const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { pepperoni, deaths } = require('../dbObjects.js');
 const { lostGame } = require('../helper.js');
