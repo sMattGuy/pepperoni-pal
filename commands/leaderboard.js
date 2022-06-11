@@ -19,7 +19,7 @@ module.exports = {
 		let boardType = interaction.options.getString('type');
 		
 		if(boardType == 'best'){
-			let tags = await pepperoni.findAll();
+			let tags = await pepperoni.findAll({where:{alive:1}});
 			let bestMap = new Map();
 			for(let i=0;i<tags.length;i++){
 				let timeAlive = Date.now() - tags[i].startDate;

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageAttachment, MessageEmbed } = require('discord.js');
-const { createNewPepperoni,testClean,testHappiness,testHunger,testSick} = require('../helper.js')
+const { createNewPepperoni, getNewEmbed} = require('../helper.js')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,23 +12,9 @@ module.exports = {
 		}
 		else{
 			let birthday = new Date(pepperoni.startDate);
-			let hunger = testHunger(pepperoni.hunger);
-			let happiness = testHappiness(pepperoni.happiness);
-			let cleanliness = testClean(pepperoni.cleanliness);
-			let sickness = testSick(pepperoni.sick);
-
-			const pepEmbed = new MessageEmbed()
-				.setColor('#F099C8')
-				.setTitle(`${pepperoni.name} Stats`)
-				.setDescription(`${pepperoni.name}, Gen. ${pepperoni.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`)
-				.setThumbnail('https://www.imgur.com/PRcSnWE.png')
-				.addFields(
-					{name:`Hunger`, value:`${hunger}`, inline:true},
-					{name:`Happiness`, value:`${happiness}`, inline:true},
-					{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
-					{name:`Sickness`, value:`${sickness}`, inline:true},
-				);
-				interaction.reply({embeds:[pepEmbed]});
+			let personality = await pepperoni.getPersonality(pepperoni);
+			let pepEmbed = getNewEmbed(pepperoni, personality.name, 'https://www.imgur.com/PRcSnWE.png', `${pepperoni.name} Stats`, `${pepperoni.name}, Gen. ${pepperoni.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
+			interaction.reply({embeds:[pepEmbed]});
 		}
 	},
 };

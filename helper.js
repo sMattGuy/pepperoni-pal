@@ -16,6 +16,7 @@ pill https://i.imgur.com/K1q6bKC.png
 play https://i.imgur.com/U9CQXvL.png
 wash https://i.imgur.com/uTP7IUI.png
 namechange https://i.imgur.com/6cZYyC5.png
+dios https://i.imgur.com/iKBe2dd.png
 */
 
 const { pepperoni } = require('./dbObjects.js');
@@ -45,59 +46,94 @@ async function createNewPepperoni(pepperoniTag, interaction){
 		happiness : Math.floor(Math.random() * 5) + 8,
 		cleanliness : Math.floor(Math.random() * 5) + 8,
 		sick : 0,
-		startDate : Date.now()
+		startDate : Date.now(),
+		personality: 1,
 	});
 	pepperoniTag = await pepperoni.findOne({where:{userid:interaction.user.id}});
-
-	let hunger = testHunger(pepperoniTag.hunger);
-	let happiness = testHappiness(pepperoniTag.happiness);
-	let cleanliness = testClean(pepperoniTag.cleanliness);
-	let sickness = testSick(pepperoniTag.sick);
-
-	const pepEmbed = new MessageEmbed()
-		.setColor('#F099C8')
-		.setTitle('He has risen!')
-		.setDescription(`The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`)
-		.setThumbnail('https://i.imgur.com/LoHGf48.png')
-		.addFields(
-			{name:`Hunger`, value:`${hunger}`, inline:true},
-			{name:`Happiness`, value:`${happiness}`, inline:true},
-			{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
-			{name:`Sickness`, value:`${sickness}`, inline:true},
-		);
+	await pepperoniTag.setPersonality(pepperoniTag);
+	
+	let personality = await pepperoniTag.getPersonality(pepperoniTag);
+	
+	const pepEmbed = getNewEmbed(pepperoniTag, personality.name, 'https://i.imgur.com/LoHGf48.png', 'He has risen!', `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
 	await interaction.followUp({ embeds: [pepEmbed]});
 	pepperoniTag.save();
 }
 async function lostGame(pepperoniTag, interaction, deaths, gameName){
-	await recordDeath(pepperoniTag, gameName, deaths, interaction, true);
-	const pepEmbed = new MessageEmbed()
-		.setColor('#FF2222')
-		.setTitle('Game Over!')
-		.setDescription(`${pepperoniTag.name} has suffered from ${gameName}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
-		.setThumbnail(deathMap.get(gameName));
-	
-	await interaction.send({ embeds: [pepEmbed]}).catch(err => {console.log(err)});
+	let personality = await pepperoniTag.getPersonality(pepperoniTag);
+	if(personality.id == 10){
+		pepperoniTag.personality = 1;
+		pepperoniTag.hunger = 15;
+		pepperoniTag.happiness = 15;
+		pepperoniTag.cleanliness = 15;
+		pepperoniTag.sick = 0;
+		pepperoniTag.save();
+		const pepEmbed = new MessageEmbed()
+			.setColor('#FF2222')
+			.setTitle('Dio Activates!')
+			.setDescription(`${pepperoniTag.name} has been saved from ${results.cause} by Dio! The Dio turns to dust in the process...`)
+			.setThumbnail('https://i.imgur.com/iKBe2dd.png');
+		
+		await interaction.send({ embeds: [pepEmbed]}).catch(err => {console.log(err)});
+	}
+	else{
+		await recordDeath(pepperoniTag, gameName, deaths, interaction, true);
+		const pepEmbed = new MessageEmbed()
+			.setColor('#FF2222')
+			.setTitle('Game Over!')
+			.setDescription(`${pepperoniTag.name} has suffered from ${gameName}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
+			.setThumbnail(deathMap.get(gameName));
+		
+		await interaction.send({ embeds: [pepEmbed]}).catch(err => {console.log(err)});
+	}
 }
 async function hasDied(pepperoniTag, interaction, hourly, deaths){
 	let results = checkDeathConditions(pepperoniTag);
 	if(results.death){
-		await recordDeath(pepperoniTag, results.cause, deaths, interaction, hourly);
-		const pepEmbed = new MessageEmbed()
-			.setColor('#FF2222')
-			.setTitle('Game Over!')
-			.setDescription(`${pepperoniTag.name} has suffered from ${results.cause}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
-			.setThumbnail(deathMap.get(results.cause));
-		
-		if(hourly){
-			try{
-				await interaction.send({ embeds: [pepEmbed]});
+		let personality = await pepperoniTag.getPersonality(pepperoniTag);
+		if(personality.id == 10){
+			pepperoniTag.personality = 1;
+			pepperoniTag.hunger = 15;
+			pepperoniTag.happiness = 15;
+			pepperoniTag.cleanliness = 15;
+			pepperoniTag.sick = 0;
+			pepperoniTag.save();
+			const pepEmbed = new MessageEmbed()
+				.setColor('#FF2222')
+				.setTitle('Dio Activates!')
+				.setDescription(`${pepperoniTag.name} has been saved from ${results.cause} by Dio! The Dio turns to dust in the process...`)
+				.setThumbnail('https://i.imgur.com/iKBe2dd.png');
+			
+			if(hourly){
+				try{
+					await interaction.send({ embeds: [pepEmbed]});
+				}
+				catch(error){
+					console.log(error)
+				}
 			}
-			catch(error){
-				console.log(error)
+			else{
+				await interaction.followUp({ embeds: [pepEmbed]});
 			}
 		}
 		else{
-			await interaction.followUp({ embeds: [pepEmbed]});
+			await recordDeath(pepperoniTag, results.cause, deaths, interaction, hourly);
+			const pepEmbed = new MessageEmbed()
+				.setColor('#FF2222')
+				.setTitle('Game Over!')
+				.setDescription(`${pepperoniTag.name} has suffered from ${results.cause}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
+				.setThumbnail(deathMap.get(results.cause));
+			
+			if(hourly){
+				try{
+					await interaction.send({ embeds: [pepEmbed]});
+				}
+				catch(error){
+					console.log(error)
+				}
+			}
+			else{
+				await interaction.followUp({ embeds: [pepEmbed]});
+			}
 		}
 	}
 }
@@ -200,5 +236,25 @@ function testSick(value){
 	if(value >=5)
 		return sickLevels[4];
 }
-
-module.exports = {createNewPepperoni,hasDied,foods,testClean,testHappiness,testHunger,testSick,lostGame}
+function getNewEmbed(pepperoni, personalityName, thumbnail, title, description){
+	//get flavor text for pepperoni
+	let hunger = testHunger(pepperoni.hunger);
+	let happiness = testHappiness(pepperoni.happiness);
+	let cleanliness = testClean(pepperoni.cleanliness);
+	let sickness = testSick(pepperoni.sick);
+	//design embed
+	const pepEmbed = new MessageEmbed()
+		.setColor('#F099C8')
+		.setTitle(title)
+		.setDescription(description)
+		.setThumbnail(thumbnail)
+		.addFields(
+			{name:`Hunger`, value:`${hunger}`, inline:true},
+			{name:`Happiness`, value:`${happiness}`, inline:true},
+			{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
+			{name:`Sickness`, value:`${sickness}`, inline:true},
+			{name:`Personality`, value:`${personalityName}`, inline:true},
+		);
+	return pepEmbed;
+}
+module.exports = {createNewPepperoni,hasDied,foods,testClean,testHappiness,testHunger,testSick,lostGame,getNewEmbed}
