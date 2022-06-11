@@ -75,7 +75,7 @@ module.exports = {
 			});
 			accCollector.once('end',async collected => {
 				if(noGame){
-					await interaction.deleteReply().catch(e => console.log('no interaction exists'));
+					await interaction.editReply('Opponent didn\'t respond!').catch(e => console.log('no interaction exists'));
 				}
 			});
 		});
