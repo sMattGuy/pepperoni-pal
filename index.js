@@ -45,7 +45,7 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 		if(pepperoniTag[i].alive == 1){
 			try{
 				let pepperoniOwner = await client.users.fetch(pepperoniTag[i].userid);
-				let personality = await pepperoniTag[i].getPersonality();
+				let personality = await pepperoniTag[i].getPersonality(pepperoniTag[i]);
 				let prevSickness = pepperoniTag[i].sick;
 				
 				let feedAmount = Math.floor(Math.random()*3)+1;

@@ -12,7 +12,7 @@ const stats = require('./model/stats.js')(sequelize, Sequelize.DataTypes);
 const personality = require('./model/personality.js')(sequelize, Sequelize.DataTypes);
 
 Reflect.defineProperty(pepperoni.prototype, 'getStats', {
-	value: pepperoniTag => {
+	value: async pepperoniTag => {
 		let statsFound = await stats.findOne({where:{userid: pepperoniTag.userid}});
 		if(statsFound){
 			return statsFound;
