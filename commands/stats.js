@@ -13,7 +13,7 @@ module.exports = {
 		else{
 			let birthday = new Date(pepperoni.startDate);
 			let personality = await pepperoni.getPersonality(pepperoni);
-			let pepEmbed = getNewEmbed(pepperoni, personality.name, 'https://www.imgur.com/PRcSnWE.png', `${pepperoni.name} Stats`, `${pepperoni.name}, Gen. ${pepperoni.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
+			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoni.name} Stats`, `${pepperoni.name}, Gen. ${pepperoni.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
 			interaction.reply({embeds:[pepEmbed]});
 		}
 	},

@@ -21,7 +21,7 @@ module.exports = {
 			let oldName = pepperoni.name;
 			pepperoni.name = newName;
 			
-			let pepEmbed = getNewEmbed(pepperoni, personality.name, 'https://www.imgur.com/6cZYyC5.png', `Trip to the DMV!`, `${oldName} has been renamed to ${pepperoni.name}!`);
+			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/6cZYyC5.png', `Trip to the DMV!`, `${oldName} has been renamed to ${pepperoni.name}!`);
 			await interaction.reply({ embeds: [pepEmbed] });	
 			await hasDied(pepperoni, interaction, false, deaths);
 		}

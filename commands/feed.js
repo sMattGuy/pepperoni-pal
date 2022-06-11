@@ -18,7 +18,7 @@ module.exports = {
 			if(personality.hungerMod < 0)
 				pepperoni.hunger -= Math.floor(Math.random()*5)+1;
 			
-			let pepEmbed = getNewEmbed(pepperoni, personality.name, 'https://www.imgur.com/6Du3IQg.png', `Dinner time!`, `${pepperoni.name} enjoyed a nice meal!`);
+			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/6Du3IQg.png', `Dinner time!`, `${pepperoni.name} enjoyed a nice meal!`);
 			await interaction.reply({ embeds: [pepEmbed] });	
 			await hasDied(pepperoni, interaction, false, deaths);
 		}

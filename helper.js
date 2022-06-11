@@ -54,7 +54,7 @@ async function createNewPepperoni(pepperoniTag, interaction){
 	
 	let personality = await pepperoniTag.getPersonality(pepperoniTag);
 	
-	const pepEmbed = getNewEmbed(pepperoniTag, personality.name, 'https://i.imgur.com/LoHGf48.png', 'He has risen!', `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
+	const pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://i.imgur.com/LoHGf48.png', 'He has risen!', `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
 	await interaction.followUp({ embeds: [pepEmbed]});
 	pepperoniTag.save();
 }
@@ -236,7 +236,7 @@ function testSick(value){
 	if(value >=5)
 		return sickLevels[4];
 }
-function getNewEmbed(pepperoni, personalityName, thumbnail, title, description){
+function getNewEmbed(pepperoni, personality, thumbnail, title, description){
 	//get flavor text for pepperoni
 	let hunger = testHunger(pepperoni.hunger);
 	let happiness = testHappiness(pepperoni.happiness);
@@ -253,7 +253,8 @@ function getNewEmbed(pepperoni, personalityName, thumbnail, title, description){
 			{name:`Happiness`, value:`${happiness}`, inline:true},
 			{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
 			{name:`Sickness`, value:`${sickness}`, inline:true},
-			{name:`Personality`, value:`${personalityName}`, inline:true},
+			{name:`Personality`, value:`${personality.name}`, inline:true},
+			{name:`Skill`, value:`${personality.special}`, inline:true},
 		);
 	return pepEmbed;
 }

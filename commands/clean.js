@@ -14,7 +14,7 @@ module.exports = {
 			pepperoni.cleanliness += Math.floor(Math.random()*6)+10;
 			let personality = await pepperoni.getPersonality(pepperoni);
 			
-			let pepEmbed = getNewEmbed(pepperoni, personality.name, 'https://www.imgur.com/uTP7IUI.png', `Bath time!`, `${pepperoni.name} is nice and clean now!`);
+			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/uTP7IUI.png', `Bath time!`, `${pepperoni.name} is nice and clean now!`);
 			await interaction.reply({ embeds: [pepEmbed] });
 			await hasDied(pepperoni, interaction, false, deaths);
 		}

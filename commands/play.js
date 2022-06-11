@@ -37,7 +37,7 @@ module.exports = {
 				descriptionContents += '\n(He also seems to have a cough?)';
 			}
 			
-			let pepEmbed = getNewEmbed(pepperoni, personality.name, 'https://www.imgur.com/U9CQXvL.png', 'A day at the park!', descriptionContents);
+			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/U9CQXvL.png', 'A day at the park!', descriptionContents);
 			await interaction.reply({ embeds: [pepEmbed] });
 			await hasDied(pepperoni, interaction, false, deaths);
 		}
