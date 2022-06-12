@@ -209,7 +209,7 @@ module.exports = {
 									await obi.editReply({content:Formatters.codeBlock(`You have died, GAMEOVER!`),components:[]});
 									if(RoundAttacker == challenger){
 										await interaction.editReply({content:`${challengerName} has defeated ${opponentName}!`});
-										await lostGame(enemyPepperoni, optionOpp, deaths, "lostRPS");
+										await lostGame(enemyPepperoni, optionOpp, deaths, "lostBattle");
 										let xpGain = 20;
 										if(challengerStats.level < opponentStats.level)
 											xpGain += (10 * (opponentStats.level - challengerStats.level));
@@ -217,7 +217,7 @@ module.exports = {
 									}
 									else{
 										await interaction.editReply({content:`${opponentName} has defeated ${challengerName}!`});
-										await lostGame(pepperoniTag, challenger, deaths, "lostRPS");
+										await lostGame(pepperoniTag, challenger, deaths, "lostBattle");
 										let xpGain = 20;
 										if(opponentStats.level < challengerStats.level)
 											xpGain += (10 * (challengerStats.level - opponentStats.level));
