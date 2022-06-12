@@ -17,6 +17,7 @@ play https://i.imgur.com/U9CQXvL.png
 wash https://i.imgur.com/uTP7IUI.png
 namechange https://i.imgur.com/6cZYyC5.png
 dios https://i.imgur.com/iKBe2dd.png
+levelup https://i.imgur.com/8n1SZ6o.png
 */
 
 const { pepperoni } = require('./dbObjects.js');
@@ -31,6 +32,7 @@ deathMap.set('unhappy', 'https://www.imgur.com/ARYRMcm.png');
 deathMap.set('lostRPS', 'https://www.imgur.com/2DZ1ORN.png');
 
 const petNames = ["Pepperoni","Dusty","Rocky","Miffy","Bosco","Walter","Chanel","Bruno","Morbius","Pebbles","Guava Flame","Poopy","Momo","Dumbass","Misty","Joji","Fred","Throwback","Cooper","Stinky","Gordon","Jessie","Steve","Ian","Gildian","Peter","Matt","Dan","Momi","Yato"];
+const pronouns = ["He","She","They","It"];
 async function createNewPepperoni(pepperoniTag, interaction){
 	await interaction.reply({content:`Looks like There isn't a Pepperoni alive right now. Let me reincarnate him quickly...`});
 	let generation = 1;
@@ -51,10 +53,18 @@ async function createNewPepperoni(pepperoniTag, interaction){
 	});
 	pepperoniTag = await pepperoni.findOne({where:{userid:interaction.user.id}});
 	await pepperoniTag.setPersonality(pepperoniTag);
-	
 	let personality = await pepperoniTag.getPersonality(pepperoniTag);
 	
-	const pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://i.imgur.com/LoHGf48.png', 'He has risen!', `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
+	let stats = await pepperoniTag.getStats(pepperoniTag);
+	stats.level = 1;
+	stats.experience = 0;
+	stats.nextLevel = 20;
+	stats.attack = 0;
+	stats.defense = 0;
+	stats.evade = 0;
+	stats.save();
+	let pronoun = pronouns[Math.random()*pronouns.length];
+	const pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://i.imgur.com/LoHGf48.png', `${pronoun} has risen!`, `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
 	await interaction.followUp({ embeds: [pepEmbed]});
 	pepperoniTag.save();
 }
@@ -258,4 +268,56 @@ function getNewEmbed(pepperoni, personality, thumbnail, title, description){
 		);
 	return pepEmbed;
 }
-module.exports = {createNewPepperoni,hasDied,foods,testClean,testHappiness,testHunger,testSick,lostGame,getNewEmbed}
+async function giveExperience(pepperoni, interaction, hourly, xpAmount){
+	let stats = await pepperoni.getStats(pepperoni);
+	stats.experience += xpAmount;
+	if(stats.experience >= stats.nextLevel){
+		//user has leveled up
+		let levelsToGain = 0;
+		while(stats.experience >= stats.nextLevel){
+			stats.experience -= stats.nextLevel;
+			stats.level += 1;
+			levelsToGain += 1;
+			stats.nextLevel = 25*Math.pow(stats.level, 2.6);
+		}
+		for(let i=0;i<levelsToGain;i++){
+			let randomStat = Math.random();
+			if(randomStat <= 0.33){
+				//up attack
+				stats.attack += 1;
+			}
+			else if(randomStat <= 0.66){
+				//up defense
+				stats.defense += 1;
+			}
+			else{
+				//up evade
+				stats.evade += 1;
+			}
+		}
+		const pepEmbed = new MessageEmbed()
+		.setColor('#F099C8')
+		.setTitle(`Congratulations! ${pepperoni.name} has leveled up!`)
+		.setThumbnail('https://i.imgur.com/8n1SZ6o.png')
+		.addFields(
+			{name:`Level`, value:`${stats.level}`, inline:true},
+			{name:`Experience`, value:`${stats.experience}/${stats.nextLevel}`, inline:true},
+			{name:`Attack`, value:`${stats.attack}`, inline:true},
+			{name:`Defense`, value:`${stats.defense}`, inline:true},
+			{name:`Evade`, value:`${stats.evade}`, inline:true},
+		);
+		if(hourly){
+			try{
+				await interaction.send({ embeds: [pepEmbed]});
+			}
+			catch(error){
+				console.log(error)
+			}
+		}
+		else{
+			await interaction.followUp({ embeds: [pepEmbed]});
+		}
+	}
+	stats.save();
+}
+module.exports = {giveExperience,createNewPepperoni,hasDied,foods,testClean,testHappiness,testHunger,testSick,lostGame,getNewEmbed}

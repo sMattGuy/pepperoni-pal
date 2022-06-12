@@ -16,6 +16,9 @@ module.exports = {
 			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/uTP7IUI.png', `Bath time!`, `${pepperoni.name} is nice and clean now!`);
 			await interaction.reply({ embeds: [pepEmbed] });
 			await hasDied(pepperoni, interaction, false, deaths);
+			if(pepperoni.alive == 1){
+				await giveExperience(pepperoni, interaction, false, 5);
+			}
 		}
 	},
 };

@@ -24,9 +24,9 @@ module.exports = {
 					pepperoni.hunger -= 1;
 				
 				let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/K1q6bKC.png', `Get well soon ${pepperoni.name}!`, `${pepperoni.name} took the cheese pill and feels better!`);
-				await interaction.reply({ embeds: [pepEmbed] });	
+				await interaction.reply({ embeds: [pepEmbed] });
+				await giveExperience(pepperoni, interaction, false, 5);
 			}
-			await hasDied(pepperoni, interaction, false, deaths);
 		}
 	},
 };

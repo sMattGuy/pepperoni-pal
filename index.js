@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { hasDied, foods } = require('./helper.js');
+const { giveExperience, hasDied, foods } = require('./helper.js');
 const { pepperoni, deaths } = require('./dbObjects.js');
 const cron = require('cron')
 
@@ -84,6 +84,17 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 				}
 				await hasDied(pepperoniTag[i], pepperoniOwner, true, deaths);
 				
+				let currentTime = new Date();
+				
+				if(pepperoniTag[i].alive == 1 && currentTime.getHours() == 0){
+					//if pepperoni still alive at 12am reward some xp
+					let timeAlive = pepperoniTag[i].startDate - currentTime.valueOf();
+					let timeSeconds = Math.floor(value/1000);
+					let timeMins = Math.floor(timeSeconds/60);
+					let timeHours = Math.floor(timeMins/60);
+					let daysAlive = Math.floor(timeHours/24);
+					await giveExperience(pepperoniTag[i], pepperoniOwner, true, 10*daysAlive);
+				}
 				pepperoniTag[i].save();
 			}
 			catch(err){
