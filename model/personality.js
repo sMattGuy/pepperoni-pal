@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
 		special: {
 			type: DataTypes.STRING,
 			defaultValue: "Normal",
+		},
+		specialDescription: {
+			type: DataTypes.STRING,
+			defaultValue: "matt forgor to put something",
 		}
 	}, {
 		timestamps: false,

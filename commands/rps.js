@@ -1,7 +1,7 @@
 const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { pepperoni, deaths } = require('../dbObjects.js');
-const { lostGame } = require('../helper.js');
+const { giveExperience, lostGame } = require('../helper.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -45,7 +45,8 @@ module.exports = {
 			await interaction.reply({content: `Your opponent doesn't have a Pepperoni!`,ephemeral: true});
 			return;
 		}
-		
+		let challengerStats = await pepperoniTag.getStats(pepperoniTag);
+		let opponentStats = await enemyPepperoni.getStats(enemyPepperoni);
 		await interaction.reply(`Starting RPS`);
 		//get the acceptance of battle
 		const startFilter = i => i.user.id === opponentID && (i.customId === 'accept' || i.customId === 'deny');
@@ -121,18 +122,18 @@ module.exports = {
 							}
 							else if((challThrow == 'rock' && oppThrow == 'scissors')||(challThrow == 'scissors' && oppThrow == 'paper')||(challThrow == 'paper' && oppThrow == 'rock')){
 								await interaction.editReply({content:`${challengerName} threw ${challThrow}, ${opponentName} threw ${oppThrow}\n${challengerName} won!`,files:[`./images/rps/rps_${challThrow}_${oppThrow}.png`]});
-								
 								lostGame(enemyPepperoni, optionOpp, deaths, "lostRPS");
 								enemyPepperoni.save();
+								await giveExperience(pepperoniTag, challenger, true, 20);
 							}
 							else if(challThrow == oppThrow){
 								await interaction.editReply({content:`${challengerName} threw ${challThrow}, ${opponentName} threw ${oppThrow}\nIt's a tie!`,files:[`./images/rps/rps_${challThrow}_${oppThrow}.png`]});
-								
 							}
 							else{
 								await interaction.editReply({content:`${challengerName} threw ${challThrow}, ${opponentName} threw ${oppThrow}\n${opponentName} won!`,files:[`./images/rps/rps_${challThrow}_${oppThrow}.png`]});
 								lostGame(pepperoniTag, challenger, deaths, "lostRPS");
 								pepperoniTag.save();
+								await giveExperience(enemyPepperoni, optionOpp, true, 20);
 							}
 						});
 						opponentCollector.once('end',collected => {

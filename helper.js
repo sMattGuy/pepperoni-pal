@@ -265,6 +265,7 @@ function getNewEmbed(pepperoni, personality, thumbnail, title, description){
 			{name:`Sickness`, value:`${sickness}`, inline:true},
 			{name:`Personality`, value:`${personality.name}`, inline:true},
 			{name:`Skill`, value:`${personality.special}`, inline:true},
+			{name:`Skill Description`, value:`${personality.specialDescription}`},
 		);
 	return pepEmbed;
 }
