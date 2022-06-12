@@ -63,7 +63,7 @@ async function createNewPepperoni(pepperoniTag, interaction){
 	stats.defense = 0;
 	stats.evade = 0;
 	stats.save();
-	let pronoun = pronouns[Math.random()*pronouns.length];
+	let pronoun = pronouns[Math.floor(Math.random()*pronouns.length)];
 	const pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://i.imgur.com/LoHGf48.png', `${pronoun} has risen!`, `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
 	await interaction.followUp({ embeds: [pepEmbed]});
 	pepperoniTag.save();
