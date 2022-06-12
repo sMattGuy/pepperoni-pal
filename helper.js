@@ -149,6 +149,7 @@ async function hasDied(pepperoniTag, interaction, hourly, deaths){
 }
 async function recordDeath(pepperoniTag, causeOfDeath, deaths, interaction, hourly){
 	pepperoniTag.alive = 0;
+	pepperoniTag.save();
 	let userid = "";
 	let username = "";
 	if(hourly){

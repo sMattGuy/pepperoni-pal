@@ -122,8 +122,7 @@ module.exports = {
 							}
 							else if((challThrow == 'rock' && oppThrow == 'scissors')||(challThrow == 'scissors' && oppThrow == 'paper')||(challThrow == 'paper' && oppThrow == 'rock')){
 								await interaction.editReply({content:`${challengerName} threw ${challThrow}, ${opponentName} threw ${oppThrow}\n${challengerName} won!`,files:[`./images/rps/rps_${challThrow}_${oppThrow}.png`]});
-								lostGame(enemyPepperoni, optionOpp, deaths, "lostRPS");
-								enemyPepperoni.save();
+								await lostGame(enemyPepperoni, optionOpp, deaths, "lostRPS");
 								await giveExperience(pepperoniTag, challenger, true, 20);
 							}
 							else if(challThrow == oppThrow){
@@ -131,8 +130,7 @@ module.exports = {
 							}
 							else{
 								await interaction.editReply({content:`${challengerName} threw ${challThrow}, ${opponentName} threw ${oppThrow}\n${opponentName} won!`,files:[`./images/rps/rps_${challThrow}_${oppThrow}.png`]});
-								lostGame(pepperoniTag, challenger, deaths, "lostRPS");
-								pepperoniTag.save();
+								await lostGame(pepperoniTag, challenger, deaths, "lostRPS");
 								await giveExperience(enemyPepperoni, optionOpp, true, 20);
 							}
 						});
