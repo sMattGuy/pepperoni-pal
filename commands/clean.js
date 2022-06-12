@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { createNewPepperoni, hasDied, getNewEmbed } = require('../helper.js');
+const { giveExperience, createNewPepperoni, hasDied, getNewEmbed } = require('../helper.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()

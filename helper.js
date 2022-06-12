@@ -278,7 +278,7 @@ async function giveExperience(pepperoni, interaction, hourly, xpAmount){
 			stats.experience -= stats.nextLevel;
 			stats.level += 1;
 			levelsToGain += 1;
-			stats.nextLevel = 25*Math.pow(stats.level, 2.6);
+			stats.nextLevel = Math.floor(25*Math.pow(stats.level, 1.5));
 		}
 		for(let i=0;i<levelsToGain;i++){
 			let randomStat = Math.random();
