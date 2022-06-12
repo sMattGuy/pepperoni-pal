@@ -133,7 +133,7 @@ module.exports = {
 					attackerCollector.once('collect', async bi => {
 						damageCalc = 0;
 						noChall = false;
-						let usedSpecial = false;
+						let usedSpecialAbility = false;
 						if(bi.customId == 'special'){
 							usedSpecial = true;
 							usedSpecial[RoundAttackerSpecial] = 1;
@@ -179,7 +179,7 @@ module.exports = {
 						//start opponents choice
 						const defenderCollector = await RoundDefenderDM.createMessageComponentCollector({defendFilter,time:60000});
 						let filler = `Your opponent rolled a ${damageCalc}!`;
-						if(usedSpecial){
+						if(usedSpecialAbility){
 							filler = `Your opponent used their special: ${RoundAttackerPersonality.special}!`;
 						}
 						RoundDefender.send({content:Formatters.codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
