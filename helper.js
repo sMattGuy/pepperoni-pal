@@ -18,6 +18,7 @@ wash https://i.imgur.com/uTP7IUI.png
 namechange https://i.imgur.com/6cZYyC5.png
 dios https://i.imgur.com/iKBe2dd.png
 levelup https://i.imgur.com/8n1SZ6o.png
+lostBattle https://i.imgur.com/HaHoH17.png
 */
 
 const { pepperoni } = require('./dbObjects.js');
@@ -30,6 +31,7 @@ deathMap.set('sick', 'https://www.imgur.com/HB92e4s.png');
 deathMap.set('starved', 'https://www.imgur.com/vFb6u46.png');
 deathMap.set('unhappy', 'https://www.imgur.com/ARYRMcm.png');
 deathMap.set('lostRPS', 'https://www.imgur.com/2DZ1ORN.png');
+deathMap.set('lostBattle', 'https://i.imgur.com/HaHoH17.png');
 
 const petNames = ["Pepperoni","Dusty","Rocky","Miffy","Bosco","Walter","Chanel","Bruno","Morbius","Pebbles","Guava Flame","Poopy","Momo","Dumbass","Misty","Joji","Fred","Throwback","Cooper","Stinky","Gordon","Jessie","Steve","Ian","Gildian","Peter","Matt","Dan","Momi","Yato"];
 const pronouns = ["He","She","They","It"];
