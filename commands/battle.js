@@ -237,7 +237,6 @@ module.exports = {
 						defenderCollector.once('end',collected => {
 							if(noOpp){
 								interaction.editReply(`Opponent didn't respond in time!`);
-								oppMsg.delete();
 								if(RoundAttacker == challenger){
 									//opponent didnt respond
 									lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
@@ -253,7 +252,6 @@ module.exports = {
 				attackerCollector.once('end',collected => {
 					if(noOpp){
 						interaction.editReply(`Challenger didn't respond in time!`);
-						challMsg.delete();
 						if(RoundAttacker == challenger){
 							//opponent didnt respond
 							lostGame(pepperoniTag, challenger, deaths, "ranAway");
