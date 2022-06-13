@@ -117,6 +117,16 @@ module.exports = {
 			const challDM = await challenger.createDM();
 			const oppDM = await optionOpp.createDM();
 			
+			//global variables for battle
+			let challengerPoisonAbility = 0;
+			let opponentPoisonAbility = 0;
+			
+			let challengerBonusDefense = 0;
+			let challengerBonusEvade = 0;
+			
+			let opponentBonusDefense = 0;
+			let opponentBonusEvade = 0;
+			
 			doAttack(challenger, challDM, challengerStats, challengerSpecial, challengerHealth, challengerPersonality, optionOpp, oppDM, opponentStats, opponentHealth, opponentPersonality,opponentSpecial);
 			async function doAttack(RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerSpecial, RoundAttackerHealth, RoundAttackerPersonality, RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderHealth, RoundDefenderPersonality, RoundDefenderSpecial){
 				let damageCalc = 0;
@@ -156,6 +166,8 @@ module.exports = {
 						damageCalc = 0;
 						noChall = false;
 						let usedSpecialAbility = false;
+						let tempDefenseReduction = 0;
+						let tempEvasionReduction = 0;
 						if(bi.customId == 'special'){
 							usedSpecialAbility = true;
 							RoundAttackerSpecial = 1;
@@ -174,28 +186,52 @@ module.exports = {
 								damageCalc = Math.floor(Math.random()*6)+5;
 							}
 							else if(specialAttack == 'Cheer'){
+								tempDefenseReduction = 1;
 								RoundDefenderStats.defense -= 1;
 							}
 							else if(specialAttack == 'Sob'){
+								tempEvasionReduction = 1;
 								RoundDefenderStats.evade -= 1;
 							}
-							else if(specialAttack == 'Dirt Fling'){
-								RoundDefenderStats.evade -= 2;
+							else if(specialAttack == 'Dirt Cover'){
+								if(RoundAttacker == challenger){
+									challengerBonusDefense = 2;
+								}
+								else{
+									opponentBonusDefense = 2;
+								}
 							}
 							else if(specialAttack == 'Scrub'){
-								RoundAttackerStats.evade += 2
+								if(RoundAttacker == challenger){
+									challengerBonusEvade = 2;
+								}
+								else{
+									opponentBonusEvade = 2;
+								}
 							}
 							else if(specialAttack == 'Survivalist'){
-								RoundAttackerStats.defense += 2
+								let escapeBattle = Math.floor(Math.random()*6)+1;
+								if(escapeBattle == 1){
+									//escaped battle
+									bi.update({content:Formatters.codeBlock(`You Escaped from the battle!`),components:[]});
+									RoundDefender.send({content:Formatters.codeBlock(`Your opponent ran from the battle using their skill!`),components:[]});
+									return;
+								}
 							}
 							else if(specialAttack == 'Diseased'){
-								RoundAttackerStats.attack += 1;
+								if(RoundAttacker == challenger){
+									challengerPoisonAbility = 5;
+								}
+								else{
+									opponentPoisonAbility = 5;
+								}
 							}
 						}
 						else{
 							damageCalc = Math.floor(Math.random()*6)+1;
 							damageCalc += RoundAttackerStats.attack;
 						}
+						
 						bi.update({content:Formatters.codeBlock(`You rolled ${damageCalc} for attack! Let's see what your opponent does...`),components:[]});
 						
 						//start opponents choice
@@ -204,6 +240,28 @@ module.exports = {
 						if(usedSpecialAbility){
 							filler += `\nYour opponent used their special: ${RoundAttackerPersonality.special}!`;
 						}
+						
+						//apply temp buffs
+						if(tempDefenseReduction != 0){
+							RoundDefenderStats.defense -= tempDefenseReduction;
+						}
+						if(tempEvasionReduction != 0){
+							RoundDefenderStats.evade -= tempEvasionReduction;
+						}
+						
+						if(RoundDefender == challenger && challengerBonusDefense != 0){
+							RoundDefenderStats.defense += challengerBonusDefense;
+						}
+						else if(RoundDefender == opponent && opponentBonusDefense != 0){
+							RoundDefenderStats.defense += opponentBonusDefense;
+						}
+						if(RoundDefender == challenger && challengerBonusEvade != 0){
+							RoundDefenderStats.evade += challengerBonusEvade;
+						}
+						else if(RoundDefender == opponent && opponentBonusEvade != 0){
+							RoundDefenderStats.evade += opponentBonusEvade;
+						}
+						
 						RoundDefender.send({content:Formatters.codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
 							defenderCollector.once('collect', async obi => {
 								noOpp = false;
@@ -220,11 +278,64 @@ module.exports = {
 									if(defenseAmount > damageCalc)
 										damageCalc = 0;
 								}
-								await bi.editReply({content:Formatters.codeBlock(`Your opponent rolled a ${defenseAmount}! You dealt ${damageCalc} damage!`),components:[]});
-								await obi.update({content:Formatters.codeBlock(`You rolled a ${defenseAmount}! You took ${damageCalc} damage!`),components:[]});
+								
+								if(RoundDefender == challenger && challengerBonusDefense != 0){
+									RoundDefenderStats.defense -= challengerBonusDefense;
+									challengerBonusDefense = 0;
+								}
+								else if(RoundDefender == opponent && opponentBonusDefense != 0){
+									RoundDefenderStats.defense -= opponentBonusDefense;
+									opponentBonusDefense = 0;
+								}
+								
+								let DefenderTurnDescription = `You rolled a ${defenseAmount}! You took ${damageCalc} damage!`;
+								let AttackerTurnDescription = `Your opponent rolled a ${defenseAmount}! You dealt ${damageCalc} damage!`;
+								//poison damage
+								if(RoundDefender == challenger && opponentPoisonAbility != 0){
+									RoundDefenderHealth -= 1
+									opponentPoisonAbility -= 1;
+									DefenderTurnDescription += ` You took 1 damage from Poison!`;
+									AttackerTurnDescription += ` You did 1 damage from Poison!`;
+								}
+								else if(RoundDefender == opponent && challengerPoisonAbility != 0){
+									RoundDefenderHealth -= 1
+									challengerPoisonAbilityPoisonAbility -= 1;
+									DefenderTurnDescription += ` You took 1 damage from Poison!`;
+									AttackerTurnDescription += ` You did 1 damage from Poison!`;
+								}
+								
+								await bi.editReply({content:Formatters.codeBlock(AttackerTurnDescription),components:[]});
+								await obi.update({content:Formatters.codeBlock(DefenderTurnDescription),components:[]});
 								
 								RoundDefenderHealth -= damageCalc;
 								
+								//remove temp debuffs
+								if(tempDefenseReduction != 0){
+									RoundDefenderStats.defense += tempDefenseReduction;
+									tempDefenseReduction = 0;
+								}
+								if(tempEvasionReduction != 0){
+									RoundDefenderStats.evade += tempEvasionReduction;
+									tempEvasionReduction = 0;
+								}
+								
+								if(RoundDefender == challenger && challengerBonusDefense != 0){
+									RoundDefenderStats.defense -= challengerBonusDefense;
+									challengerBonusDefense = 0;
+								}
+								else if(RoundDefender == opponent && opponentBonusDefense != 0){
+									RoundDefenderStats.defense -= opponentBonusDefense;
+									opponentBonusDefense = 0;
+								}
+								if(RoundDefender == challenger && challengerBonusEvade != 0){
+									RoundDefenderStats.evade -= challengerBonusEvade;
+									challengerBonusEvade = 0;
+								}
+								else if(RoundDefender == opponent && opponentBonusEvade != 0){
+									RoundDefenderStats.evade -= opponentBonusEvade;
+									opponentBonusEvade = 0;
+								}
+						
 								if(RoundDefenderHealth <= 0){
 									//oppoenent has died
 									await bi.editReply({content:Formatters.codeBlock(`Your opponent has died, you have won!`),components:[]});
