@@ -220,10 +220,10 @@ module.exports = {
 							}
 							else if(specialAttack == 'Diseased'){
 								if(RoundAttacker == challenger){
-									challengerPoisonAbility = 5;
+									challengerPoisonAbility = 3;
 								}
 								else{
-									opponentPoisonAbility = 5;
+									opponentPoisonAbility = 3;
 								}
 							}
 						}
@@ -390,7 +390,7 @@ module.exports = {
 						});
 					});
 					attackerCollector.once('end',async collected => {
-						if(noOpp){
+						if(challMsg){
 							interaction.editReply(`Challenger didn't respond in time!`);
 							pepperoniTag.gaming = 0;
 							enemyPepperoni.gaming = 0;

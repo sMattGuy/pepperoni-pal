@@ -45,7 +45,7 @@ sequelize.sync({ force, alter }).then(async () => {
 		personality.upsert({id: 6,name: 'Mud Lover',hungerMod: 0,happinessMod: 0,cleanlinessMod: 1.5,sickMod: 0,special: 'Dirt Cover', specialDescription: 'Battle: Increase defense by 2 during next turn'}), //defend
 		personality.upsert({id: 7,name: 'Clean Freak',hungerMod: 0,happinessMod: 0,cleanlinessMod: -1.5,sickMod: 0,special: 'Slippery Scrub', specialDescription: 'Battle: Increase evasion by 2 during next turn'}), //defend
 		personality.upsert({id: 8,name: 'Immune',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: -1.5,special: 'Survivalist', specialDescription: 'Battle: Get a 1 in 6 chance to run away'}), //special
-		personality.upsert({id: 9,name: 'Weak',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 1.5,special: 'Diseased', specialDescription: 'Battle: Deal 5 Damage over 5 turns'}), //special
+		personality.upsert({id: 9,name: 'Weak',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 1.5,special: 'Diseased', specialDescription: 'Battle: Deal 3 Damage over 3 turns'}), //special
 		personality.upsert({id: 10,name: 'Dios Friend',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Dios Friend', specialDescription: 'Grants you one additional life'}), //special
 	]
 	await Promise.all(personalities);
