@@ -76,7 +76,7 @@ module.exports = {
 			});
 			accCollector.once('end',async collected => {
 				if(noGame){
-					await interaction.editReply('Opponent didn\'t respond!').catch(e => console.log('no interaction exists'));
+					await interaction.editReply({content:'Opponent didn\'t respond!',components:[]}).catch(e => console.log('no interaction exists'));
 				}
 			});
 		});
