@@ -137,7 +137,7 @@ module.exports = {
 						noChall = false;
 						let usedSpecialAbility = false;
 						if(bi.customId == 'special'){
-							usedSpecial = true;
+							usedSpecialAbility = true;
 							RoundAttackerSpecial = 1;
 							let specialAttack = RoundAttackerPersonality.special;
 							if(specialAttack == 'Average'){
