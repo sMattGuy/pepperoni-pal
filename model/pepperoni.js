@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.INTEGER,
 			defaultValue: 1,
 		},
+		gaming: {
+			type: DataTypes.INTEGER,
+			defaultValue: 0,
+		},
 	}, {
 		timestamps: false,
 	});

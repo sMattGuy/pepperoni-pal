@@ -29,7 +29,6 @@ module.exports = {
 			await interaction.reply({content:'Your Pepperoni cannot fight itself!',ephemeral: true});
 			return;
 		}
-		
 		if(optionOpp.bot){
 			await interaction.reply({content: `Robots don't like fighting!`,ephemeral: true});
 			return;
@@ -40,9 +39,17 @@ module.exports = {
 			await interaction.reply({content: `You don't have a Pepperoni! Use another command to summon one!`,ephemeral: true});
 			return;
 		}
+		if(pepperoniTag.gaming == 1){
+			await interaction.reply({content: 'You are already playing a game!',ephemeral:true});
+			return;
+		}
 		let enemyPepperoni = await pepperoni.findOne({where:{userid:opponentID}});
 		if(!enemyPepperoni || enemyPepperoni.alive == 0){
 			await interaction.reply({content: `Your opponent doesn't have a Pepperoni!`,ephemeral: true});
+			return;
+		}
+		if(enemyPepperoni.gaming == 1){
+			await interaction.reply({content: 'Your opponent is  already playing a game!',ephemeral:true});
 			return;
 		}
 		//get stats for each
@@ -51,6 +58,10 @@ module.exports = {
 		let challengerPersonality = await pepperoniTag.getPersonality(pepperoniTag);
 		let opponentPersonality = await enemyPepperoni.getPersonality(enemyPepperoni);
 		await interaction.reply(`Starting Battle`);
+		pepperoniTag.gaming = 1;
+		enemyPepperoni.gaming = 1;
+		await pepperoniTag.save();
+		await enemyPepperoni.save();
 		//get the acceptance of battle
 		const startFilter = i => i.user.id === opponentID && (i.customId === 'accept' || i.customId === 'deny');
 		const accRow = new MessageActionRow()
@@ -74,12 +85,21 @@ module.exports = {
 				}
 				else if(buttInteraction.customId == 'deny'){
 					await buttInteraction.update({content:`You have declined the game!`,components:[],files:['./images/rps/reject.png']});
+					pepperoniTag.gaming = 0;
+					enemyPepperoni.gaming = 0;
+					await pepperoniTag.save();
+					await enemyPepperoni.save();
 					return;
 				}
 			});
 			accCollector.once('end',async collected => {
 				if(noGame){
 					await interaction.editReply({content:'Opponent didn\'t respond!',components:[]}).catch(e => console.log('no interaction exists'));
+					pepperoniTag.gaming = 0;
+					enemyPepperoni.gaming = 0;
+					await pepperoniTag.save();
+					await enemyPepperoni.save();
+					return;
 				}
 			});
 		});
@@ -209,6 +229,11 @@ module.exports = {
 									//oppoenent has died
 									await bi.editReply({content:Formatters.codeBlock(`Your opponent has died, you have won!`),components:[]});
 									await obi.editReply({content:Formatters.codeBlock(`You have died, GAMEOVER!`),components:[]});
+									pepperoniTag.gaming = 0;
+									enemyPepperoni.gaming = 0;
+									await pepperoniTag.save();
+									await enemyPepperoni.save();
+
 									if(RoundAttacker == challenger){
 										await interaction.editReply({content:`${challengerName} has defeated ${opponentName}!`});
 										await lostGame(enemyPepperoni, optionOpp, deaths, "lostBattle");
@@ -233,34 +258,44 @@ module.exports = {
 								
 								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 							});
-						});
-						defenderCollector.once('end',collected => {
-							if(noOpp){
-								interaction.editReply(`Opponent didn't respond in time!`);
-								if(RoundAttacker == challenger){
-									//opponent didnt respond
-									lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+							defenderCollector.once('end',async collected => {
+								if(noOpp){
+									pepperoniTag.gaming = 0;
+									enemyPepperoni.gaming = 0;
+									await pepperoniTag.save();
+									await enemyPepperoni.save();
+									oppMsg.delete()
+									await interaction.editReply(`Opponent didn't respond in time!`);
+									if(RoundAttacker == challenger){
+										//opponent didnt respond
+										lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+									}
+									else{
+										//challenger didnt respond
+										lostGame(pepperoniTag, challenger, deaths, "ranAway");
+									}
 								}
-								else{
-									//challenger didnt respond
-									lostGame(pepperoniTag, challenger, deaths, "ranAway");
-								}
-							}
+							});
 						});
 					});
-				});
-				attackerCollector.once('end',collected => {
-					if(noOpp){
-						interaction.editReply(`Challenger didn't respond in time!`);
-						if(RoundAttacker == challenger){
-							//opponent didnt respond
-							lostGame(pepperoniTag, challenger, deaths, "ranAway");
+					attackerCollector.once('end',async collected => {
+						if(noOpp){
+							interaction.editReply(`Challenger didn't respond in time!`);
+							pepperoniTag.gaming = 0;
+							enemyPepperoni.gaming = 0;
+							await pepperoniTag.save();
+							await enemyPepperoni.save();
+							challMsg.delete();
+							if(RoundAttacker == challenger){
+								//opponent didnt respond
+								lostGame(pepperoniTag, challenger, deaths, "ranAway");
+							}
+							else{
+								//challenger didnt respond
+								lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+							}
 						}
-						else{
-							//challenger didnt respond
-							lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
-						}
-					}
+					});
 				});
 			}
 		}

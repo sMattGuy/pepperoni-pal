@@ -40,11 +40,23 @@ module.exports = {
 			await interaction.reply({content: `You don't have a Pepperoni! Use another command to summon one!`,ephemeral: true});
 			return;
 		}
+		if(pepperoniTag.gaming == 1){
+			await interaction.reply({content: 'You are already in a game',ephemeral:true});
+			return;
+		}
 		let enemyPepperoni = await pepperoni.findOne({where:{userid:opponentID}});
 		if(!enemyPepperoni || enemyPepperoni.alive == 0){
 			await interaction.reply({content: `Your opponent doesn't have a Pepperoni!`,ephemeral: true});
 			return;
 		}
+		if(enemyPepperoni.gaming == 1){
+			await interaction.reply({content: 'Your opponent is already in a game',ephemeral:true});
+			return;
+		}
+		pepperoniTag.gaming = 1;
+		enemyPepperoni.gaming = 1;
+		await pepperoniTag.save();
+		await enemyPepperoni.save();
 		let challengerStats = await pepperoniTag.getStats(pepperoniTag);
 		let opponentStats = await enemyPepperoni.getStats(enemyPepperoni);
 		await interaction.reply(`Starting RPS`);
@@ -70,12 +82,20 @@ module.exports = {
 					acceptRPS();
 				}
 				else if(buttInteraction.customId == 'deny'){
+					pepperoniTag.gaming = 0;
+					enemyPepperoni.gaming = 0;
+					await pepperoniTag.save();
+					await enemyPepperoni.save();
 					await buttInteraction.update({content:`You have declined the game!`,components:[],files:['./images/rps/reject.png']});
 					return;
 				}
 			});
 			accCollector.once('end',async collected => {
 				if(noGame){
+					pepperoniTag.gaming = 0;
+					enemyPepperoni.gaming = 0;
+					await pepperoniTag.save();
+					await enemyPepperoni.save();
 					await interaction.editReply({content:'Opponent didn\'t respond!',components:[]}).catch(e => console.log('no interaction exists'));
 				}
 			});
@@ -116,7 +136,10 @@ module.exports = {
 							await obi.update({content:`Go back to the channel you were challenged to see who wins!`,components:[]});
 							let challThrow = bi.customId;
 							let oppThrow = obi.customId;
-							
+							pepperoniTag.gaming = 0;
+							enemyPepperoni.gaming = 0;
+							await pepperoniTag.save();
+							await enemyPepperoni.save();
 							if(challThrow != 'rock' && challThrow != 'scissors' && challThrow != 'paper' && oppThrow != 'rock' && oppThrow != 'scissors' && oppThrow != 'paper'){
 								await interaction.editReply(`Someone didn't choose correctly, the match is canceled!`);
 							}
@@ -134,17 +157,25 @@ module.exports = {
 								await giveExperience(enemyPepperoni, optionOpp, true, 20);
 							}
 						});
-						opponentCollector.once('end',collected => {
+						opponentCollector.once('end',async collected => {
 							if(noOpp){
-								interaction.editReply(`Opponent didn't respond in time!`);
+								pepperoniTag.gaming = 0;
+								enemyPepperoni.gaming = 0;
+								await pepperoniTag.save();
+								await enemyPepperoni.save();
+								await interaction.editReply(`Opponent didn't respond in time!`);
 								oppMsg.delete();
 							}
 						});
 					});
 				});
-				challengerCollector.once('end',collected => {
+				challengerCollector.once('end',async collected => {
 					if(noOpp){
-						interaction.editReply(`Challenger didn't respond in time!`);
+						pepperoniTag.gaming = 0;
+						enemyPepperoni.gaming = 0;
+						await pepperoniTag.save();
+						await enemyPepperoni.save();
+						await interaction.editReply(`Challenger didn't respond in time!`);
 						challMsg.delete();
 					}
 				});
