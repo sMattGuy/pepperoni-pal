@@ -127,13 +127,9 @@ module.exports = {
 			let opponentBonusDefense = 0;
 			let opponentBonusEvade = 0;
 			
-			let noChall = true;
-			let noOpp = true;
 			doAttack(challenger, challDM, challengerStats, challengerSpecial, challengerHealth, challengerPersonality, optionOpp, oppDM, opponentStats, opponentHealth, opponentPersonality,opponentSpecial);
 			async function doAttack(RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerSpecial, RoundAttackerHealth, RoundAttackerPersonality, RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderHealth, RoundDefenderPersonality, RoundDefenderSpecial){
 				let damageCalc = 0;
-				noChall = true;
-				noOpp = true;
 				const defendFilter = i => i.customId === 'defend' || i.customId === 'evade';
 				const defendRow = new MessageActionRow()
 					.addComponents(
@@ -166,7 +162,6 @@ module.exports = {
 				RoundAttacker.send({content:Formatters.codeBlock(`Select an option!\nYour HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}\nEnemy HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}`),components:[attackRow]}).then(challMsg => {
 					attackerCollector.once('collect', async bi => {
 						damageCalc = 0;
-						noChall = false;
 						let usedSpecialAbility = false;
 						let tempDefenseReduction = 0;
 						let tempEvasionReduction = 0;
@@ -266,7 +261,6 @@ module.exports = {
 						
 						RoundDefender.send({content:Formatters.codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
 							defenderCollector.once('collect', async obi => {
-								noOpp = false;
 								let defenseAmount = Math.floor(Math.random()*6)+1;
 								if(obi.customId == 'defend'){
 									defenseAmount += RoundDefenderStats.defense;
@@ -372,8 +366,7 @@ module.exports = {
 								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 							});
 							defenderCollector.once('end',async collected => {
-								console.log(collected);
-								if(noOpp){
+								if(!collected){
 									pepperoniTag.gaming = 0;
 									enemyPepperoni.gaming = 0;
 									await pepperoniTag.save();
@@ -393,8 +386,7 @@ module.exports = {
 						});
 					});
 					attackerCollector.once('end',async collected => {
-						console.log(collected);
-						if(challMsg){
+						if(!collected){
 							interaction.editReply(`Challenger didn't respond in time!`);
 							pepperoniTag.gaming = 0;
 							enemyPepperoni.gaming = 0;
