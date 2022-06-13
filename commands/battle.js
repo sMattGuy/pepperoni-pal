@@ -366,8 +366,7 @@ module.exports = {
 								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 							});
 							defenderCollector.once('end',async collected => {
-								console.log(collected);
-								if(!collected){
+								if(collected.size == 0){
 									pepperoniTag.gaming = 0;
 									enemyPepperoni.gaming = 0;
 									await pepperoniTag.save();
@@ -387,8 +386,7 @@ module.exports = {
 						});
 					});
 					attackerCollector.once('end',async collected => {
-						console.log(collected);
-						if(!collected){
+						if(collected.size == 0){
 							interaction.editReply(`Challenger didn't respond in time!`);
 							pepperoniTag.gaming = 0;
 							enemyPepperoni.gaming = 0;
