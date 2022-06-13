@@ -240,11 +240,11 @@ module.exports = {
 								oppMsg.delete();
 								if(RoundAttacker == challenger){
 									//opponent didnt respond
-									await lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+									lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
 								}
 								else{
 									//challenger didnt respond
-									await lostGame(pepperoniTag, challenger, deaths, "ranAway");
+									lostGame(pepperoniTag, challenger, deaths, "ranAway");
 								}
 							}
 						});
@@ -256,11 +256,11 @@ module.exports = {
 						challMsg.delete();
 						if(RoundAttacker == challenger){
 							//opponent didnt respond
-							await lostGame(pepperoniTag, challenger, deaths, "ranAway");
+							lostGame(pepperoniTag, challenger, deaths, "ranAway");
 						}
 						else{
 							//challenger didnt respond
-							await lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+							lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
 						}
 					}
 				});
