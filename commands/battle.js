@@ -127,11 +127,13 @@ module.exports = {
 			let opponentBonusDefense = 0;
 			let opponentBonusEvade = 0;
 			
+			let noChall = true;
+			let noOpp = true;
 			doAttack(challenger, challDM, challengerStats, challengerSpecial, challengerHealth, challengerPersonality, optionOpp, oppDM, opponentStats, opponentHealth, opponentPersonality,opponentSpecial);
 			async function doAttack(RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerSpecial, RoundAttackerHealth, RoundAttackerPersonality, RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderHealth, RoundDefenderPersonality, RoundDefenderSpecial){
 				let damageCalc = 0;
-				let noChall = true;
-				let noOpp = true;
+				noChall = true;
+				noOpp = true;
 				const defendFilter = i => i.customId === 'defend' || i.customId === 'evade';
 				const defendRow = new MessageActionRow()
 					.addComponents(
@@ -160,7 +162,7 @@ module.exports = {
 						.setLabel('Skill')
 						.setStyle('PRIMARY'),)
 				}
-				const attackerCollector = await RoundAttackerDM.createMessageComponentCollector({attackFilter,time:60000});
+				const attackerCollector = await RoundAttackerDM.createMessageComponentCollector({attackFilter,time:60000,max:1});
 				RoundAttacker.send({content:Formatters.codeBlock(`Select an option!\nYour HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}\nEnemy HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}`),components:[attackRow]}).then(challMsg => {
 					attackerCollector.once('collect', async bi => {
 						damageCalc = 0;
@@ -235,7 +237,7 @@ module.exports = {
 						bi.update({content:Formatters.codeBlock(`You rolled ${damageCalc} for attack! Let's see what your opponent does...`),components:[]});
 						
 						//start opponents choice
-						const defenderCollector = await RoundDefenderDM.createMessageComponentCollector({defendFilter,time:60000});
+						const defenderCollector = await RoundDefenderDM.createMessageComponentCollector({defendFilter,time:60000,max:1});
 						let filler = `Your opponent rolled a ${damageCalc}!`;
 						if(usedSpecialAbility){
 							filler += `\nYour opponent used their special: ${RoundAttackerPersonality.special}!`;
@@ -370,6 +372,7 @@ module.exports = {
 								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 							});
 							defenderCollector.once('end',async collected => {
+								console.log(collected);
 								if(noOpp){
 									pepperoniTag.gaming = 0;
 									enemyPepperoni.gaming = 0;
@@ -390,6 +393,7 @@ module.exports = {
 						});
 					});
 					attackerCollector.once('end',async collected => {
+						console.log(collected);
 						if(challMsg){
 							interaction.editReply(`Challenger didn't respond in time!`);
 							pepperoniTag.gaming = 0;
