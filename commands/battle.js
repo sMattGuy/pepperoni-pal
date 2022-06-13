@@ -252,13 +252,13 @@ module.exports = {
 						if(RoundDefender == challenger && challengerBonusDefense != 0){
 							RoundDefenderStats.defense += challengerBonusDefense;
 						}
-						else if(RoundDefender == opponent && opponentBonusDefense != 0){
+						else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
 							RoundDefenderStats.defense += opponentBonusDefense;
 						}
 						if(RoundDefender == challenger && challengerBonusEvade != 0){
 							RoundDefenderStats.evade += challengerBonusEvade;
 						}
-						else if(RoundDefender == opponent && opponentBonusEvade != 0){
+						else if(RoundDefender == optionOpp && opponentBonusEvade != 0){
 							RoundDefenderStats.evade += opponentBonusEvade;
 						}
 						
@@ -283,7 +283,7 @@ module.exports = {
 									RoundDefenderStats.defense -= challengerBonusDefense;
 									challengerBonusDefense = 0;
 								}
-								else if(RoundDefender == opponent && opponentBonusDefense != 0){
+								else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
 									RoundDefenderStats.defense -= opponentBonusDefense;
 									opponentBonusDefense = 0;
 								}
@@ -297,7 +297,7 @@ module.exports = {
 									DefenderTurnDescription += ` You took 1 damage from Poison!`;
 									AttackerTurnDescription += ` You did 1 damage from Poison!`;
 								}
-								else if(RoundDefender == opponent && challengerPoisonAbility != 0){
+								else if(RoundDefender == optionOpp && challengerPoisonAbility != 0){
 									RoundDefenderHealth -= 1
 									challengerPoisonAbilityPoisonAbility -= 1;
 									DefenderTurnDescription += ` You took 1 damage from Poison!`;
@@ -323,7 +323,7 @@ module.exports = {
 									RoundDefenderStats.defense -= challengerBonusDefense;
 									challengerBonusDefense = 0;
 								}
-								else if(RoundDefender == opponent && opponentBonusDefense != 0){
+								else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
 									RoundDefenderStats.defense -= opponentBonusDefense;
 									opponentBonusDefense = 0;
 								}
@@ -331,7 +331,7 @@ module.exports = {
 									RoundDefenderStats.evade -= challengerBonusEvade;
 									challengerBonusEvade = 0;
 								}
-								else if(RoundDefender == opponent && opponentBonusEvade != 0){
+								else if(RoundDefender == optionOpp && opponentBonusEvade != 0){
 									RoundDefenderStats.evade -= opponentBonusEvade;
 									opponentBonusEvade = 0;
 								}
