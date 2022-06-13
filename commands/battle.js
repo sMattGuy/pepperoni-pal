@@ -366,6 +366,7 @@ module.exports = {
 								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 							});
 							defenderCollector.once('end',async collected => {
+								console.log(collected);
 								if(!collected){
 									pepperoniTag.gaming = 0;
 									enemyPepperoni.gaming = 0;
@@ -386,6 +387,7 @@ module.exports = {
 						});
 					});
 					attackerCollector.once('end',async collected => {
+						console.log(collected);
 						if(!collected){
 							interaction.editReply(`Challenger didn't respond in time!`);
 							pepperoniTag.gaming = 0;
