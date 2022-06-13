@@ -175,6 +175,9 @@ module.exports = {
 								RoundAttackerStats.attack = average;
 								RoundAttackerStats.defense = average;
 								RoundAttackerStats.evade = average;
+								
+								damageCalc = Math.floor(Math.random()*3)+1;
+								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Peckish'){
 								damageCalc = Math.floor(Math.random()*6)+3;
@@ -184,11 +187,13 @@ module.exports = {
 							}
 							else if(specialAttack == 'Cheer'){
 								tempDefenseReduction = 1;
-								RoundDefenderStats.defense -= 1;
+								damageCalc = Math.floor(Math.random()*3)+1;
+								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Sob'){
 								tempEvasionReduction = 1;
-								RoundDefenderStats.evade -= 1;
+								damageCalc = Math.floor(Math.random()*3)+1;
+								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Dirt Cover'){
 								if(RoundAttacker == challenger){
@@ -197,6 +202,8 @@ module.exports = {
 								else{
 									opponentBonusDefense = 2;
 								}
+								damageCalc = Math.floor(Math.random()*3)+1;
+								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Scrub'){
 								if(RoundAttacker == challenger){
@@ -205,6 +212,8 @@ module.exports = {
 								else{
 									opponentBonusEvade = 2;
 								}
+								damageCalc = Math.floor(Math.random()*3)+1;
+								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Survivalist'){
 								let escapeBattle = Math.floor(Math.random()*6)+1;
@@ -295,7 +304,7 @@ module.exports = {
 								}
 								else if(RoundDefender == optionOpp && challengerPoisonAbility != 0){
 									RoundDefenderHealth -= 1
-									challengerPoisonAbilityPoisonAbility -= 1;
+									challengerPoisonAbility -= 1;
 									DefenderTurnDescription += ` You took 1 damage from Poison!`;
 									AttackerTurnDescription += ` You did 1 damage from Poison!`;
 								}
