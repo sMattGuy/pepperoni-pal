@@ -87,7 +87,9 @@ module.exports = {
 			let challengerHealth = 10 + (3 * (challengerStats.level - 1));
 			let opponentHealth = 10 + (3 * (opponentStats.level - 1));
 			let attackToken = 0;
-			let usedSpecial = [0,0];
+			
+			let challengerSpecial = 0;
+			let opponentSpecial = 0;
 			
 			//begin battle
 			interaction.editReply({content:`Fighters, check your DM's!`,components:[]});
@@ -95,8 +97,8 @@ module.exports = {
 			const challDM = await challenger.createDM();
 			const oppDM = await optionOpp.createDM();
 			
-			doAttack(challenger, challDM, challengerStats, attackToken, challengerHealth, challengerPersonality, optionOpp, oppDM, opponentStats, opponentHealth, opponentPersonality);
-			async function doAttack(RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerSpecial, RoundAttackerHealth, RoundAttackerPersonality, RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderHealth, RoundDefenderPersonality){
+			doAttack(challenger, challDM, challengerStats, challengerSpecial, challengerHealth, challengerPersonality, optionOpp, oppDM, opponentStats, opponentHealth, opponentPersonality,opponentSpecial);
+			async function doAttack(RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerSpecial, RoundAttackerHealth, RoundAttackerPersonality, RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderHealth, RoundDefenderPersonality, RoundDefenderSpecial){
 				let damageCalc = 0;
 				let noChall = true;
 				let noOpp = true;
@@ -121,7 +123,7 @@ module.exports = {
 						.setStyle('PRIMARY'),
 				);
 				//challenger is attacking
-				if(usedSpecial[RoundAttackerSpecial] == 0){
+				if(RoundAttackerSpecial == 0){
 					attackRow.addComponents(
 						new MessageButton()
 						.setCustomId('special')
@@ -136,7 +138,7 @@ module.exports = {
 						let usedSpecialAbility = false;
 						if(bi.customId == 'special'){
 							usedSpecial = true;
-							usedSpecial[RoundAttackerSpecial] = 1;
+							RoundAttackerSpecial = 1;
 							let specialAttack = RoundAttackerPersonality.special;
 							if(specialAttack == 'Average'){
 								let statAdd = RoundAttackerStats.attack + RoundAttackerStats.defense + RoundAttackerStats.evade;
@@ -180,7 +182,7 @@ module.exports = {
 						const defenderCollector = await RoundDefenderDM.createMessageComponentCollector({defendFilter,time:60000});
 						let filler = `Your opponent rolled a ${damageCalc}!`;
 						if(usedSpecialAbility){
-							filler = `Your opponent used their special: ${RoundAttackerPersonality.special}!`;
+							filler += `\nYour opponent used their special: ${RoundAttackerPersonality.special}!`;
 						}
 						RoundDefender.send({content:Formatters.codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
 							defenderCollector.once('collect', async obi => {
@@ -229,13 +231,21 @@ module.exports = {
 								attackToken += 1
 								attackToken = attackToken % 2;
 								
-								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, attackToken, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality);
+								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 							});
 						});
 						defenderCollector.once('end',collected => {
 							if(noOpp){
 								interaction.editReply(`Opponent didn't respond in time!`);
 								oppMsg.delete();
+								if(RoundAttacker == challenger){
+									//opponent didnt respond
+									await lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+								}
+								else{
+									//challenger didnt respond
+									await lostGame(pepperoniTag, challenger, deaths, "ranAway");
+								}
 							}
 						});
 					});
@@ -244,6 +254,14 @@ module.exports = {
 					if(noOpp){
 						interaction.editReply(`Challenger didn't respond in time!`);
 						challMsg.delete();
+						if(RoundAttacker == challenger){
+							//opponent didnt respond
+							await lostGame(pepperoniTag, challenger, deaths, "ranAway");
+						}
+						else{
+							//challenger didnt respond
+							await lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+						}
 					}
 				});
 			}
