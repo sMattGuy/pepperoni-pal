@@ -20,6 +20,7 @@ dios https://i.imgur.com/iKBe2dd.png
 levelup https://i.imgur.com/8n1SZ6o.png
 lostBattle https://i.imgur.com/HaHoH17.png
 runaway https://i.imgur.com/5YdHXUk.png
+death_heartattack https://i.imgur.com/aaHBM1J.png
 */
 
 const { pepperoni } = require('./dbObjects.js');
@@ -34,6 +35,7 @@ deathMap.set('unhappy', 'https://www.imgur.com/ARYRMcm.png');
 deathMap.set('lostRPS', 'https://www.imgur.com/2DZ1ORN.png');
 deathMap.set('lostBattle', 'https://i.imgur.com/HaHoH17.png');
 deathMap.set('ranAway', 'https://i.imgur.com/5YdHXUk.png');
+deathMap.set('heartAttack', 'https://i.imgur.com/aaHBM1J.png');
 
 const petNames = ["Pepperoni","Dusty","Rocky","Miffy","Bosco","Walter","Chanel","Bruno","Morbius","Pebbles","Guava Flame","Poopy","Momo","Dumbass","Misty","Joji","Fred","Throwback","Cooper","Stinky","Gordon","Jessie","Steve","Ian","Gildian","Peter","Matt","Dan","Momi","Yato"];
 const pronouns = ["He","She","They","It"];
@@ -184,6 +186,9 @@ function checkDeathConditions(pepperoniTag){
 	else if(pepperoniTag.happiness <= 0){
 		return {"death":true,"cause":"unhappy"};
 	}
+	else if(pepperoniTag.happiness >= 30){
+		return {"death":true,"cause":"heartAttack"}
+	}
 	else if(pepperoniTag.cleanliness <= 0){
 		return {"death":true,"cause":"dirty"};
 	}
@@ -200,7 +205,7 @@ function checkDeathConditions(pepperoniTag){
 const foods = ["kibble and bits","slop","wetfood","dryfood","steaks","hamburger","water without any ice","mystery meat"];
 
 const hungerLevels = ["Starving","Hungry","Satisfied","Full","Bursting"];
-const happyLevels = ["Depressed","Upset","Neutral","Happy","Jovial"];
+const happyLevels = ["Depressed","Upset","Neutral","Happy","Over Excited"];
 const cleanLevels = ["Filthy","Dirty","Clean","Shiny","Blinding"];
 const sickLevels = ["Normal","Sick","Fevered","Bedridden","Dying"];
 function testHunger(value){
