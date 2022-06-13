@@ -86,7 +86,7 @@ async function lostGame(pepperoniTag, interaction, deaths, gameName){
 		const pepEmbed = new MessageEmbed()
 			.setColor('#FF2222')
 			.setTitle('Dio Activates!')
-			.setDescription(`${pepperoniTag.name} has been saved from ${results.cause} by Dio! The Dio turns to dust in the process...`)
+			.setDescription(`${pepperoniTag.name} has been saved from ${gameName} by Dio! The Dio turns to dust in the process...`)
 			.setThumbnail('https://i.imgur.com/iKBe2dd.png');
 		
 		await interaction.send({ embeds: [pepEmbed]}).catch(err => {console.log(err)});
