@@ -237,7 +237,8 @@ module.exports = {
 							damageCalc = Math.floor(Math.random()*6)+1;
 							damageCalc += RoundAttackerStats.attack;
 						}
-						
+						if(damageCalc < 0)
+							damageCalc = 0;
 						bi.update({content:Formatters.codeBlock(`You rolled ${damageCalc} for attack! Let's see what your opponent does...`),components:[]});
 						
 						//start opponents choice
