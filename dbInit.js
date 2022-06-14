@@ -38,9 +38,9 @@ sequelize.sync({ force, alter }).then(async () => {
 	*/
 	const personalities = [
 		personality.upsert({id: 1,name: 'Normal',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Average', specialDescription: 'Battle: Subtracts Your stats from your opponents and zeros you out for this battle'}), //special
-		personality.upsert({id: 2,name: 'Light Eater',hungerMod: 1.5,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Peckish', specialDescription: 'Battle: Deal an additional 2 (+1 per 2 level) Damage for this turn'}), //attack
+		personality.upsert({id: 2,name: 'Light Eater',hungerMod: 1.5,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Peckish', specialDescription: 'Battle: Deal an additional 2 (+1 per 2 levels) Damage for this turn'}), //attack
 		personality.upsert({id: 3,name: 'Heavy Eater',hungerMod: -1.5,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Devoure', specialDescription: 'Battle: Deal an additional 4 (+1 per 2 levels) Damage for this turn'}), //attack
-		personality.upsert({id: 4,name: 'Jolly',hungerMod: 0,happinessMod: -1.5,cleanlinessMod: 0,sickMod: 0,special: 'Cheer', specialDescription: 'Battle: Reduce opponents defense by 1 (+1 per 2 level) during this turn'}), //attack
+		personality.upsert({id: 4,name: 'Jolly',hungerMod: 0,happinessMod: -1.5,cleanlinessMod: 0,sickMod: 0,special: 'Cheer', specialDescription: 'Battle: Reduce opponents defense by 1 (+1 per 2 levels) during this turn'}), //attack
 		personality.upsert({id: 5,name: 'Depressed',hungerMod: 0,happinessMod: 1.5,cleanlinessMod: 0,sickMod: 0,special: 'Sob', specialDescription: 'Battle: Reduce opponents evasion by 1 (+1 per 2 levels) during this turn'}), //attack
 		personality.upsert({id: 6,name: 'Mud Lover',hungerMod: 0,happinessMod: 0,cleanlinessMod: 1.5,sickMod: 0,special: 'Dirt Cover', specialDescription: 'Battle: Increase defense by 2 (+1 per level) during next turn'}), //defend
 		personality.upsert({id: 7,name: 'Clean Freak',hungerMod: 0,happinessMod: 0,cleanlinessMod: -1.5,sickMod: 0,special: 'Slippery Scrub', specialDescription: 'Battle: Increase evasion by 2 (+1 per level) during next turn'}), //defend
