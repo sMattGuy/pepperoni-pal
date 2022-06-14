@@ -104,7 +104,6 @@ module.exports = {
 		async function acceptRPS(){
 			let challengerHealth = 10 + (3 * (challengerStats.level - 1));
 			let opponentHealth = 10 + (3 * (opponentStats.level - 1));
-			let attackToken = 0;
 			
 			let challengerSpecial = 0;
 			let opponentSpecial = 0;
@@ -225,8 +224,14 @@ module.exports = {
 									escaped = 3
 								if(escapeBattle <= escaped){
 									//escaped battle
-									bi.update({content:Formatters.codeBlock(`You Escaped from the battle!`),components:[]});
-									RoundDefender.send({content:Formatters.codeBlock(`Your opponent ran from the battle using their skill!`),components:[]});
+									await bi.update({content:Formatters.codeBlock(`You Escaped from the battle!`),components:[]});
+									await RoundDefender.send({content:Formatters.codeBlock(`Your opponent ran from the battle using their skill!`),components:[]});
+									if(RoundAttacker == challenger){
+										await interaction.editReply({content:`${challengerName} has fled from ${opponentName}!`});
+									}
+									else{
+										await interaction.editReply({content:`${opponentName} has fled from ${challengerName}!`});
+									}
 									return;
 								}
 							}
@@ -248,158 +253,165 @@ module.exports = {
 						bi.update({content:Formatters.codeBlock(`You rolled ${damageCalc} for attack! Let's see what your opponent does...`),components:[]});
 						
 						//start opponents choice
-						const defenderCollector = await RoundDefenderDM.createMessageComponentCollector({defendFilter,time:60000,max:1});
-						let filler = `Your opponent rolled a ${damageCalc}!`;
-						if(usedSpecialAbility){
-							filler += `\nYour opponent used their special: ${RoundAttackerPersonality.special}!`;
+						if(damageCalc == 0){	
+							let filler = `Your opponent missed! (rolled ${damageCalc})`;
+							if(usedSpecialAbility){
+								filler += `\nYour opponent used their special: ${RoundAttackerPersonality.special}!`;
+							}
+							RoundDefender.send({content:Formatters.codeBlock(filler)});
+							doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 						}
-						
-						//apply temp buffs
-						if(tempDefenseReduction != 0){
-							RoundDefenderStats.defense -= tempDefenseReduction;
-						}
-						if(tempEvasionReduction != 0){
-							RoundDefenderStats.evade -= tempEvasionReduction;
-						}
-						
-						if(RoundDefender == challenger && challengerBonusDefense != 0){
-							RoundDefenderStats.defense += challengerBonusDefense;
-						}
-						else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
-							RoundDefenderStats.defense += opponentBonusDefense;
-						}
-						if(RoundDefender == challenger && challengerBonusEvade != 0){
-							RoundDefenderStats.evade += challengerBonusEvade;
-						}
-						else if(RoundDefender == optionOpp && opponentBonusEvade != 0){
-							RoundDefenderStats.evade += opponentBonusEvade;
-						}
-						
-						RoundDefender.send({content:Formatters.codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
-							defenderCollector.once('collect', async obi => {
-								let defenseAmount = Math.floor(Math.random()*6)+1;
-								if(obi.customId == 'defend'){
-									defenseAmount += RoundDefenderStats.defense;
-									damageCalc -= defenseAmount;
-									if(damageCalc <= 0)
-										damageCalc = 1;
-								}
-								else{
-									//evade
-									defenseAmount += RoundDefenderStats.evade;
-									if(defenseAmount > damageCalc)
-										damageCalc = 0;
-								}
-								
-								if(RoundDefender == challenger && challengerBonusDefense != 0){
-									RoundDefenderStats.defense -= challengerBonusDefense;
-									challengerBonusDefense = 0;
-								}
-								else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
-									RoundDefenderStats.defense -= opponentBonusDefense;
-									opponentBonusDefense = 0;
-								}
-								
-								let DefenderTurnDescription = `You rolled a ${defenseAmount}! You took ${damageCalc} damage!`;
-								let AttackerTurnDescription = `Your opponent rolled a ${defenseAmount}! You dealt ${damageCalc} damage!`;
-								//poison damage
-								if(RoundDefender == challenger && opponentPoisonAbility != 0){
-									RoundDefenderHealth -= 1
-									opponentPoisonAbility -= 1;
-									DefenderTurnDescription += ` You took 1 damage from Poison!`;
-									AttackerTurnDescription += ` You did 1 damage from Poison!`;
-								}
-								else if(RoundDefender == optionOpp && challengerPoisonAbility != 0){
-									RoundDefenderHealth -= 1
-									challengerPoisonAbility -= 1;
-									DefenderTurnDescription += ` You took 1 damage from Poison!`;
-									AttackerTurnDescription += ` You did 1 damage from Poison!`;
-								}
-								
-								await bi.editReply({content:Formatters.codeBlock(AttackerTurnDescription),components:[]});
-								await obi.update({content:Formatters.codeBlock(DefenderTurnDescription),components:[]});
-								
-								RoundDefenderHealth -= damageCalc;
-								
-								//remove temp debuffs
-								if(tempDefenseReduction != 0){
-									RoundDefenderStats.defense += tempDefenseReduction;
-									tempDefenseReduction = 0;
-								}
-								if(tempEvasionReduction != 0){
-									RoundDefenderStats.evade += tempEvasionReduction;
-									tempEvasionReduction = 0;
-								}
-								
-								if(RoundDefender == challenger && challengerBonusDefense != 0){
-									RoundDefenderStats.defense -= challengerBonusDefense;
-									challengerBonusDefense = 0;
-								}
-								else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
-									RoundDefenderStats.defense -= opponentBonusDefense;
-									opponentBonusDefense = 0;
-								}
-								if(RoundDefender == challenger && challengerBonusEvade != 0){
-									RoundDefenderStats.evade -= challengerBonusEvade;
-									challengerBonusEvade = 0;
-								}
-								else if(RoundDefender == optionOpp && opponentBonusEvade != 0){
-									RoundDefenderStats.evade -= opponentBonusEvade;
-									opponentBonusEvade = 0;
-								}
-						
-								if(RoundDefenderHealth <= 0){
-									//oppoenent has died
-									await bi.editReply({content:Formatters.codeBlock(`Your opponent has died, you have won!`),components:[]});
-									await obi.editReply({content:Formatters.codeBlock(`You have died, GAMEOVER!`),components:[]});
-									pepperoniTag.gaming = 0;
-									enemyPepperoni.gaming = 0;
-									await pepperoniTag.save();
-									await enemyPepperoni.save();
+						else{
+							const defenderCollector = await RoundDefenderDM.createMessageComponentCollector({defendFilter,time:60000,max:1});
+							let filler = `Your opponent rolled a ${damageCalc}!`;
+							if(usedSpecialAbility){
+								filler += `\nYour opponent used their special: ${RoundAttackerPersonality.special}!`;
+							}
+							
+							//apply temp buffs
+							if(tempDefenseReduction != 0){
+								RoundDefenderStats.defense -= tempDefenseReduction;
+							}
+							if(tempEvasionReduction != 0){
+								RoundDefenderStats.evade -= tempEvasionReduction;
+							}
+							
+							if(RoundDefender == challenger && challengerBonusDefense != 0){
+								RoundDefenderStats.defense += challengerBonusDefense;
+							}
+							else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
+								RoundDefenderStats.defense += opponentBonusDefense;
+							}
+							if(RoundDefender == challenger && challengerBonusEvade != 0){
+								RoundDefenderStats.evade += challengerBonusEvade;
+							}
+							else if(RoundDefender == optionOpp && opponentBonusEvade != 0){
+								RoundDefenderStats.evade += opponentBonusEvade;
+							}
+							
+							RoundDefender.send({content:Formatters.codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
+								defenderCollector.once('collect', async obi => {
+									let defenseAmount = Math.floor(Math.random()*6)+1;
+									if(obi.customId == 'defend'){
+										defenseAmount += RoundDefenderStats.defense;
+										damageCalc -= defenseAmount;
+										if(damageCalc <= 0)
+											damageCalc = 1;
+									}
+									else{
+										//evade
+										defenseAmount += RoundDefenderStats.evade;
+										if(defenseAmount > damageCalc)
+											damageCalc = 0;
+									}
+									
+									if(RoundDefender == challenger && challengerBonusDefense != 0){
+										RoundDefenderStats.defense -= challengerBonusDefense;
+										challengerBonusDefense = 0;
+									}
+									else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
+										RoundDefenderStats.defense -= opponentBonusDefense;
+										opponentBonusDefense = 0;
+									}
+									
+									let DefenderTurnDescription = `You rolled a ${defenseAmount}! You took ${damageCalc} damage!`;
+									let AttackerTurnDescription = `Your opponent rolled a ${defenseAmount}! You dealt ${damageCalc} damage!`;
+									//poison damage
+									if(RoundDefender == challenger && opponentPoisonAbility != 0){
+										RoundDefenderHealth -= 1
+										opponentPoisonAbility -= 1;
+										DefenderTurnDescription += ` You took 1 damage from Poison!`;
+										AttackerTurnDescription += ` You did 1 damage from Poison!`;
+									}
+									else if(RoundDefender == optionOpp && challengerPoisonAbility != 0){
+										RoundDefenderHealth -= 1
+										challengerPoisonAbility -= 1;
+										DefenderTurnDescription += ` You took 1 damage from Poison!`;
+										AttackerTurnDescription += ` You did 1 damage from Poison!`;
+									}
+									
+									await bi.editReply({content:Formatters.codeBlock(AttackerTurnDescription),components:[]});
+									await obi.update({content:Formatters.codeBlock(DefenderTurnDescription),components:[]});
+									
+									RoundDefenderHealth -= damageCalc;
+									
+									//remove temp debuffs
+									if(tempDefenseReduction != 0){
+										RoundDefenderStats.defense += tempDefenseReduction;
+										tempDefenseReduction = 0;
+									}
+									if(tempEvasionReduction != 0){
+										RoundDefenderStats.evade += tempEvasionReduction;
+										tempEvasionReduction = 0;
+									}
+									
+									if(RoundDefender == challenger && challengerBonusDefense != 0){
+										RoundDefenderStats.defense -= challengerBonusDefense;
+										challengerBonusDefense = 0;
+									}
+									else if(RoundDefender == optionOpp && opponentBonusDefense != 0){
+										RoundDefenderStats.defense -= opponentBonusDefense;
+										opponentBonusDefense = 0;
+									}
+									if(RoundDefender == challenger && challengerBonusEvade != 0){
+										RoundDefenderStats.evade -= challengerBonusEvade;
+										challengerBonusEvade = 0;
+									}
+									else if(RoundDefender == optionOpp && opponentBonusEvade != 0){
+										RoundDefenderStats.evade -= opponentBonusEvade;
+										opponentBonusEvade = 0;
+									}
+							
+									if(RoundDefenderHealth <= 0){
+										//oppoenent has died
+										await bi.editReply({content:Formatters.codeBlock(`Your opponent has died, you have won!`),components:[]});
+										await obi.editReply({content:Formatters.codeBlock(`You have died, GAMEOVER!`),components:[]});
+										pepperoniTag.gaming = 0;
+										enemyPepperoni.gaming = 0;
+										await pepperoniTag.save();
+										await enemyPepperoni.save();
 
-									if(RoundAttacker == challenger){
-										await interaction.editReply({content:`${challengerName} has defeated ${opponentName}!`});
-										await lostGame(enemyPepperoni, optionOpp, deaths, "lostBattle");
-										let xpGain = 20;
-										if(challengerStats.level < opponentStats.level)
-											xpGain += (10 * (opponentStats.level - challengerStats.level));
-										await giveExperience(pepperoniTag, challenger, true, xpGain);
+										if(RoundAttacker == challenger){
+											await interaction.editReply({content:`${challengerName} has defeated ${opponentName}!`});
+											await lostGame(enemyPepperoni, optionOpp, deaths, "lostBattle");
+											let xpGain = 20;
+											if(challengerStats.level < opponentStats.level)
+												xpGain += (10 * (opponentStats.level - challengerStats.level));
+											await giveExperience(pepperoniTag, challenger, true, xpGain);
+										}
+										else{
+											await interaction.editReply({content:`${opponentName} has defeated ${challengerName}!`});
+											await lostGame(pepperoniTag, challenger, deaths, "lostBattle");
+											let xpGain = 20;
+											if(opponentStats.level < challengerStats.level)
+												xpGain += (10 * (challengerStats.level - opponentStats.level));
+											await giveExperience(enemyPepperoni, optionOpp, true, xpGain);
+										}
+										return;
 									}
-									else{
-										await interaction.editReply({content:`${opponentName} has defeated ${challengerName}!`});
-										await lostGame(pepperoniTag, challenger, deaths, "lostBattle");
-										let xpGain = 20;
-										if(opponentStats.level < challengerStats.level)
-											xpGain += (10 * (challengerStats.level - opponentStats.level));
-										await giveExperience(enemyPepperoni, optionOpp, true, xpGain);
+									
+									doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
+								});
+								defenderCollector.once('end',async collected => {
+									if(collected.size == 0){
+										pepperoniTag.gaming = 0;
+										enemyPepperoni.gaming = 0;
+										await pepperoniTag.save();
+										await enemyPepperoni.save();
+										oppMsg.delete()
+										await interaction.editReply(`Opponent didn't respond in time!`);
+										if(RoundAttacker == challenger){
+											//opponent didnt respond
+											lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
+										}
+										else{
+											//challenger didnt respond
+											lostGame(pepperoniTag, challenger, deaths, "ranAway");
+										}
 									}
-									return;
-								}
-								
-								attackToken += 1
-								attackToken = attackToken % 2;
-								
-								doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
+								});
 							});
-							defenderCollector.once('end',async collected => {
-								if(collected.size == 0){
-									pepperoniTag.gaming = 0;
-									enemyPepperoni.gaming = 0;
-									await pepperoniTag.save();
-									await enemyPepperoni.save();
-									oppMsg.delete()
-									await interaction.editReply(`Opponent didn't respond in time!`);
-									if(RoundAttacker == challenger){
-										//opponent didnt respond
-										lostGame(enemyPepperoni, optionOpp, deaths, "ranAway");
-									}
-									else{
-										//challenger didnt respond
-										lostGame(pepperoniTag, challenger, deaths, "ranAway");
-									}
-								}
-							});
-						});
+						}
 					});
 					attackerCollector.once('end',async collected => {
 						if(collected.size == 0){
