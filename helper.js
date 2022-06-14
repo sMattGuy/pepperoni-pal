@@ -320,6 +320,8 @@ async function giveExperience(pepperoni, interaction, hourly, xpAmount){
 				stats.evade += 1;
 			}
 		}
+		if(stats.experience < 0)
+			stats.experience = 0;
 		const pepEmbed = new MessageEmbed()
 		.setColor('#F099C8')
 		.setTitle(`Congratulations! ${pepperoni.name} has leveled up!`)
