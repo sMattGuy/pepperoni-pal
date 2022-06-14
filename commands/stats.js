@@ -10,7 +10,7 @@ module.exports = {
 			option
 				.setName("user")
 				.setDescription("Who you want to view")
-				.setRequired(false)),,
+				.setRequired(false)),
 	async execute(interaction, pepperoniTag, deaths) {
 		if(!pepperoniTag || pepperoniTag.alive == 0){
 			await createNewPepperoni(pepperoniTag, interaction);
@@ -18,7 +18,7 @@ module.exports = {
 		else{
 			const target = interaction.options.getUser('user') ?? interaction.user;
 			
-			pepperoniTag = await pepperoni.findOne({where:{id:target.id}});
+			pepperoniTag = await pepperoni.findOne({where:{userid:target.id}});
 			
 			let birthday = new Date(pepperoniTag.startDate);
 			let personality = await pepperoniTag.getPersonality(pepperoniTag);
