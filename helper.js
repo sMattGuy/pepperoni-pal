@@ -219,7 +219,7 @@ function testHunger(value){
 		return hungerLevels[2];
 	if(value < maximumValue*0.6)
 		return hungerLevels[3];
-	if(value >=maximumValue*0.8)
+	if(value >= maximumValue*0.8)
 		return hungerLevels[4];
 }
 function testHappiness(value){
@@ -231,7 +231,7 @@ function testHappiness(value){
 		return happyLevels[2];
 	if(value < maximumValue*0.6)
 		return happyLevels[3];
-	if(value >=maximumValue*0.8)
+	if(value >= maximumValue*0.8)
 		return happyLevels[4];
 }
 function testClean(value){
@@ -243,7 +243,7 @@ function testClean(value){
 		return cleanLevels[2];
 	if(value < maximumValue*0.6)
 		return cleanLevels[3];
-	if(value >=maximumValue*0.8)
+	if(value >= maximumValue*0.8)
 		return cleanLevels[4];
 }
 function testSick(value){
@@ -255,7 +255,7 @@ function testSick(value){
 		return sickLevels[2];
 	if(value < 4)
 		return sickLevels[3];
-	if(value >=5)
+	if(value >= 5)
 		return sickLevels[4];
 }
 function getNewEmbed(pepperoni, personality, thumbnail, title, description){
