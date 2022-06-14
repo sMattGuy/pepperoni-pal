@@ -176,23 +176,24 @@ async function recordDeath(pepperoniTag, causeOfDeath, deaths, interaction, hour
 		"time":Date.now()
 	});
 }
+const maximumValue = 45;
 function checkDeathConditions(pepperoniTag){
 	if(pepperoniTag.hunger <= 0){
 		return {"death":true,"cause":"starved"};
 	}
-	else if(pepperoniTag.hunger >= 30){
+	else if(pepperoniTag.hunger >= maximumValue){
 		return {"death":true,"cause":"overfed"};
 	}
 	else if(pepperoniTag.happiness <= 0){
 		return {"death":true,"cause":"unhappy"};
 	}
-	else if(pepperoniTag.happiness >= 30){
+	else if(pepperoniTag.happiness >= maximumValue){
 		return {"death":true,"cause":"heartAttack"}
 	}
 	else if(pepperoniTag.cleanliness <= 0){
 		return {"death":true,"cause":"dirty"};
 	}
-	else if(pepperoniTag.cleanliness >= 30){
+	else if(pepperoniTag.cleanliness >= maximumValue){
 		return {"death":true,"cause":"overwashed"};
 	}
 	else if(pepperoniTag.sick > 5){
@@ -208,40 +209,41 @@ const hungerLevels = ["Starving","Hungry","Satisfied","Full","Bursting"];
 const happyLevels = ["Depressed","Upset","Neutral","Happy","Over Excited"];
 const cleanLevels = ["Filthy","Dirty","Clean","Shiny","Blinding"];
 const sickLevels = ["Normal","Sick","Fevered","Bedridden","Dying"];
+
 function testHunger(value){
-	if(value < 5)
+	if(value < 4)
 		return hungerLevels[0];
-	if(value < 10)
+	if(value < maximumValue*0.2)
 		return hungerLevels[1];
-	if(value < 15)
+	if(value < maximumValue*0.4)
 		return hungerLevels[2];
-	if(value < 25)
+	if(value < maximumValue*0.6)
 		return hungerLevels[3];
-	if(value >=25)
+	if(value >=maximumValue*0.8)
 		return hungerLevels[4];
 }
 function testHappiness(value){
-	if(value < 5)
+	if(value < 4)
 		return happyLevels[0];
-	if(value < 10)
+	if(value < maximumValue*0.2)
 		return happyLevels[1];
-	if(value < 15)
+	if(value < maximumValue*0.4)
 		return happyLevels[2];
-	if(value < 25)
+	if(value < maximumValue*0.6)
 		return happyLevels[3];
-	if(value >=25)
+	if(value >=maximumValue*0.8)
 		return happyLevels[4];
 }
 function testClean(value){
-	if(value < 5)
+	if(value < 4)
 		return cleanLevels[0];
-	if(value < 10)
+	if(value < maximumValue*0.2)
 		return cleanLevels[1];
-	if(value < 15)
+	if(value < maximumValue*0.4)
 		return cleanLevels[2];
-	if(value < 25)
+	if(value < maximumValue*0.6)
 		return cleanLevels[3];
-	if(value >=25)
+	if(value >=maximumValue*0.8)
 		return cleanLevels[4];
 }
 function testSick(value){
