@@ -75,11 +75,9 @@ module.exports = {
 				.setLabel('Deny')
 				.setStyle('DANGER'),
 		);
-		const accCollector = await interaction.channel.createMessageComponentCollector({filter:startFilter, time: 60000});
-		let noGame = true;
+		const accCollector = await interaction.channel.createMessageComponentCollector({filter:startFilter, time: 60000, max:1});
 		await interaction.editReply({content:`${optionOpp}! You have been challenged to a DEADLY BATTLE (Losing means death!)! Click 'accept' to accept the battle, or 'deny' to refuse the battle! You have 1 min to respond!`,components:[accRow]}).then(msg => {
 			accCollector.once('collect', async buttInteraction => {
-				noGame = false;
 				if(buttInteraction.customId == 'accept'){
 					acceptRPS();
 				}
@@ -93,7 +91,7 @@ module.exports = {
 				}
 			});
 			accCollector.once('end',async collected => {
-				if(noGame){
+				if(collected.size == 0){
 					await interaction.editReply({content:'Opponent didn\'t respond!',components:[]}).catch(e => console.log('no interaction exists'));
 					pepperoniTag.gaming = 0;
 					enemyPepperoni.gaming = 0;

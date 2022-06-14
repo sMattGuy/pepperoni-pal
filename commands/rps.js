@@ -74,10 +74,8 @@ module.exports = {
 				.setStyle('DANGER'),
 		);
 		const accCollector = await interaction.channel.createMessageComponentCollector({filter:startFilter, time: 60000});
-		let noGame = true;
 		await interaction.editReply({content:`${optionOpp}! You have been challenged to DEADLY RPS (Losing means death!)! Click 'accept' to accept the rock paper scissors battle, or 'deny' to refuse the battle! You have 1 min to respond!`,components:[accRow]}).then(msg => {
 			accCollector.once('collect', async buttInteraction => {
-				noGame = false;
 				if(buttInteraction.customId == 'accept'){
 					acceptRPS();
 				}
@@ -91,7 +89,7 @@ module.exports = {
 				}
 			});
 			accCollector.once('end',async collected => {
-				if(noGame){
+				if(collected.size == 0){
 					pepperoniTag.gaming = 0;
 					enemyPepperoni.gaming = 0;
 					await pepperoniTag.save();
@@ -123,15 +121,11 @@ module.exports = {
 			const oppDM = await optionOpp.createDM();
 			const challengerCollector = await challDM.createMessageComponentCollector({filter,time:60000});
 			const opponentCollector = await oppDM.createMessageComponentCollector({filter,time:60000});
-			let noChall = true;
-			let noOpp = true;
 			challenger.send({content:`Select a throw!`,components:[gameRow]}).then(challMsg => {
 				challengerCollector.once('collect', async bi => {
-					noChall = false;
 					bi.update({content:`Got it, going to get opponents throw now`,components:[]});
 					optionOpp.send({content:`Select a throw!`,components:[gameRow]}).then(oppMsg => {
 						opponentCollector.once('collect', async obi => {
-							noOpp = false;
 							await bi.editReply({content:`Go back to the channel you were challenged to see who wins!`,components:[]});
 							await obi.update({content:`Go back to the channel you were challenged to see who wins!`,components:[]});
 							let challThrow = bi.customId;
@@ -158,7 +152,7 @@ module.exports = {
 							}
 						});
 						opponentCollector.once('end',async collected => {
-							if(noOpp){
+							if(collected.size == 0){
 								pepperoniTag.gaming = 0;
 								enemyPepperoni.gaming = 0;
 								await pepperoniTag.save();
@@ -170,7 +164,7 @@ module.exports = {
 					});
 				});
 				challengerCollector.once('end',async collected => {
-					if(noOpp){
+					if(collected.size == 0){
 						pepperoniTag.gaming = 0;
 						enemyPepperoni.gaming = 0;
 						await pepperoniTag.save();
