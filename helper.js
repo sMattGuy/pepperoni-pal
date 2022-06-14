@@ -211,39 +211,39 @@ const cleanLevels = ["Filthy","Dirty","Clean","Shiny","Blinding"];
 const sickLevels = ["Normal","Sick","Fevered","Bedridden","Dying"];
 
 function testHunger(value){
-	if(value < 4)
-		return hungerLevels[0];
 	if(value < maximumValue*0.2)
-		return hungerLevels[1];
+		return hungerLevels[0];
 	if(value < maximumValue*0.4)
-		return hungerLevels[2];
+		return hungerLevels[1];
 	if(value < maximumValue*0.6)
+		return hungerLevels[2];
+	if(value < maximumValue*0.8)
 		return hungerLevels[3];
-	if(value >= maximumValue*0.8)
+	if(value >= maximumValue)
 		return hungerLevels[4];
 }
 function testHappiness(value){
-	if(value < 4)
-		return happyLevels[0];
 	if(value < maximumValue*0.2)
-		return happyLevels[1];
+		return happyLevels[0];
 	if(value < maximumValue*0.4)
-		return happyLevels[2];
+		return happyLevels[1];
 	if(value < maximumValue*0.6)
+		return happyLevels[2];
+	if(value < maximumValue*0.8)
 		return happyLevels[3];
-	if(value >= maximumValue*0.8)
+	if(value >= maximumValue)
 		return happyLevels[4];
 }
 function testClean(value){
-	if(value < 4)
-		return cleanLevels[0];
 	if(value < maximumValue*0.2)
-		return cleanLevels[1];
+		return cleanLevels[0];
 	if(value < maximumValue*0.4)
-		return cleanLevels[2];
+		return cleanLevels[1];
 	if(value < maximumValue*0.6)
+		return cleanLevels[2];
+	if(value < maximumValue*0.8)
 		return cleanLevels[3];
-	if(value >= maximumValue*0.8)
+	if(value < maximumValue)
 		return cleanLevels[4];
 }
 function testSick(value){
