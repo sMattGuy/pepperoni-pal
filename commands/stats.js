@@ -20,6 +20,10 @@ module.exports = {
 			
 			pepperoniTag = await pepperoni.findOne({where:{userid:target.id}});
 			
+			if(!pepperoniTag){
+				await interaction.reply({content:'That Pepperoni doesn\'t exist!',ephemeral: true});
+				return;
+			}
 			let birthday = new Date(pepperoniTag.startDate);
 			let personality = await pepperoniTag.getPersonality(pepperoniTag);
 			let pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoniTag.name} Stats`, `${pepperoniTag.name}, Gen. ${pepperoniTag.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);

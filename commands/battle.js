@@ -168,9 +168,12 @@ module.exports = {
 							RoundAttackerSpecial = 1;
 							let specialAttack = RoundAttackerPersonality.special;
 							if(specialAttack == 'Average'){
-								RoundDefenderStats.attack -= RoundAttackerStats.attack;
-								RoundDefenderStats.defense -= RoundAttackerStats.defense;
-								RoundDefenderStats.evade -= RoundAttackerStats.evade;
+								if(RoundAttackerStats.attack > 0)
+									RoundDefenderStats.attack -= RoundAttackerStats.attack;
+								if(RoundAttackerStats.defense > 0)
+									RoundDefenderStats.defense -= RoundAttackerStats.defense;
+								if(RoundAttackerStats.evade > 0)
+									RoundDefenderStats.evade -= RoundAttackerStats.evade;
 								
 								RoundAttackerStats.attack = 0;
 								RoundAttackerStats.defense = 0;
