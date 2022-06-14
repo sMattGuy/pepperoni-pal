@@ -219,7 +219,7 @@ function testHunger(value){
 		return hungerLevels[2];
 	if(value < maximumValue*0.8)
 		return hungerLevels[3];
-	if(value >= maximumValue)
+	if(value < maximumValue)
 		return hungerLevels[4];
 }
 function testHappiness(value){
@@ -231,7 +231,7 @@ function testHappiness(value){
 		return happyLevels[2];
 	if(value < maximumValue*0.8)
 		return happyLevels[3];
-	if(value >= maximumValue)
+	if(value < maximumValue)
 		return happyLevels[4];
 }
 function testClean(value){
