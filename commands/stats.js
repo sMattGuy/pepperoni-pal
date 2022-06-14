@@ -1,22 +1,31 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
 const { createNewPepperoni, getNewEmbed} = require('../helper.js')
-
+const { pepperoni } = require('../dbObjects.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stats')
-		.setDescription('Shows you Pepperoni\'s stats!'),
-	async execute(interaction, pepperoni, deaths) {
-		if(!pepperoni || pepperoni.alive == 0){
-			await createNewPepperoni(pepperoni, interaction);
+		.setDescription('Shows you Pepperoni\'s stats!')
+		.addUserOption(option => 
+			option
+				.setName("user")
+				.setDescription("Who you want to view")
+				.setRequired(false)),,
+	async execute(interaction, pepperoniTag, deaths) {
+		if(!pepperoniTag || pepperoniTag.alive == 0){
+			await createNewPepperoni(pepperoniTag, interaction);
 		}
 		else{
-			let birthday = new Date(pepperoni.startDate);
-			let personality = await pepperoni.getPersonality(pepperoni);
-			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoni.name} Stats`, `${pepperoni.name}, Gen. ${pepperoni.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
+			const target = interaction.options.getUser('user') ?? interaction.user;
+			
+			pepperoniTag = await pepperoni.findOne({where:{id:target.id}});
+			
+			let birthday = new Date(pepperoniTag.startDate);
+			let personality = await pepperoniTag.getPersonality(pepperoniTag);
+			let pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoniTag.name} Stats`, `${pepperoniTag.name}, Gen. ${pepperoniTag.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
 			
 			await interaction.reply({embeds:[pepEmbed]});
-			let stats = await pepperoni.getStats(pepperoni);
+			let stats = await pepperoniTag.getStats(pepperoniTag);
 
 			let statEmbed = new MessageEmbed()
 				.setColor('#F099C8')
