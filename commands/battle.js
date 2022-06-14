@@ -180,44 +180,47 @@ module.exports = {
 								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Peckish'){
-								damageCalc = Math.floor(Math.random()*6)+3;
+								damageCalc = Math.floor(Math.random()*6)+ 3 + Math.floor((RoundAttackerStats.level - 1)/2);
 							}
 							else if(specialAttack == 'Devoure'){
-								damageCalc = Math.floor(Math.random()*6)+5;
+								damageCalc = Math.floor(Math.random()*6)+ 5 + Math.floor((RoundAttackerStats.level - 1)/2);
 							}
 							else if(specialAttack == 'Cheer'){
-								tempDefenseReduction = 1;
+								tempDefenseReduction = 1 + Math.floor((RoundAttackerStats.level - 1)/2);
 								damageCalc = Math.floor(Math.random()*3)+1;
 								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Sob'){
-								tempEvasionReduction = 1;
+								tempEvasionReduction = 1 + Math.floor((RoundAttackerStats.level - 1)/2);
 								damageCalc = Math.floor(Math.random()*3)+1;
 								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Dirt Cover'){
 								if(RoundAttacker == challenger){
-									challengerBonusDefense = 2;
+									challengerBonusDefense = 2 + challengerStats.level - 1;
 								}
 								else{
-									opponentBonusDefense = 2;
+									opponentBonusDefense = 2 + opponentStats.level - 1;
 								}
 								damageCalc = Math.floor(Math.random()*3)+1;
 								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Scrub'){
 								if(RoundAttacker == challenger){
-									challengerBonusEvade = 2;
+									challengerBonusEvade = 2 + challengerStats.level - 1;
 								}
 								else{
-									opponentBonusEvade = 2;
+									opponentBonusEvade = 2 + opponentStats.level - 1;
 								}
 								damageCalc = Math.floor(Math.random()*3)+1;
 								damageCalc += RoundAttackerStats.attack;
 							}
 							else if(specialAttack == 'Survivalist'){
 								let escapeBattle = Math.floor(Math.random()*6)+1;
-								if(escapeBattle == 1){
+								let escaped = 1 + RoundAttackerStats.level - 1;
+								if(escaped > 3)
+									escaped = 3
+								if(escapeBattle <= escaped){
 									//escaped battle
 									bi.update({content:Formatters.codeBlock(`You Escaped from the battle!`),components:[]});
 									RoundDefender.send({content:Formatters.codeBlock(`Your opponent ran from the battle using their skill!`),components:[]});
@@ -226,10 +229,10 @@ module.exports = {
 							}
 							else if(specialAttack == 'Diseased'){
 								if(RoundAttacker == challenger){
-									challengerPoisonAbility = 3;
+									challengerPoisonAbility = 3 + Math.floor((challengerStats.level - 1)/2);
 								}
 								else{
-									opponentPoisonAbility = 3;
+									opponentPoisonAbility = 3 + Math.floor((opponentStats.level - 1)/2);
 								}
 							}
 						}
