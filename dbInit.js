@@ -37,7 +37,7 @@ sequelize.sync({ force, alter }).then(async () => {
 			special will have a role in combat
 	*/
 	const personalities = [
-		personality.upsert({id: 1,name: 'Normal',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Average', specialDescription: 'Battle: Averages your stats and applies it randomly for the battle'}), //special
+		personality.upsert({id: 1,name: 'Normal',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Average', specialDescription: 'Battle: Subtracts Your stats from your opponents and zeros you out for this battle'}), //special
 		personality.upsert({id: 2,name: 'Light Eater',hungerMod: 1.5,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Peckish', specialDescription: 'Battle: Deal an additional 2 Damage for this turn'}), //attack
 		personality.upsert({id: 3,name: 'Heavy Eater',hungerMod: -1.5,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Devoure', specialDescription: 'Battle: Deal an additional 4 Damage for this turn'}), //attack
 		personality.upsert({id: 4,name: 'Jolly',hungerMod: 0,happinessMod: -1.5,cleanlinessMod: 0,sickMod: 0,special: 'Cheer', specialDescription: 'Battle: Reduce opponents defense by 1 during this turn'}), //attack
