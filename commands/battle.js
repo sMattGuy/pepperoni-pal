@@ -149,7 +149,7 @@ module.exports = {
 						.setStyle('PRIMARY'),
 				);
 				//challenger is attacking
-				if(RoundAttackerSpecial == 0){
+				if(RoundAttackerSpecial == 0 && (RoundAttackerPersonality.id != 10 || RoundAttackerPersonality.id != 11)){
 					attackRow.addComponents(
 						new MessageButton()
 						.setCustomId('special')

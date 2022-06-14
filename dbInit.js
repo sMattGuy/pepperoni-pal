@@ -47,6 +47,7 @@ sequelize.sync({ force, alter }).then(async () => {
 		personality.upsert({id: 8,name: 'Immune',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: -1.5,special: 'Survivalist', specialDescription: 'Battle: Get a 1 in 6 chance to run away'}), //special
 		personality.upsert({id: 9,name: 'Weak',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 1.5,special: 'Diseased', specialDescription: 'Battle: Deal 3 Damage over 3 turns'}), //special
 		personality.upsert({id: 10,name: 'Dios Friend',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Dios Friend', specialDescription: 'Grants you one additional life'}), //special
+		personality.upsert({id: 11,name: 'Introspective',hungerMod: 0,happinessMod: 0,cleanlinessMod: 0,sickMod: 0,special: 'Book Keeping', specialDescription: 'You can see exactly what your stats are'}), //special
 	]
 	await Promise.all(personalities);
 	console.log('Database synced');

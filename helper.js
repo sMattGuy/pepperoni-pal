@@ -264,6 +264,12 @@ function getNewEmbed(pepperoni, personality, thumbnail, title, description){
 	let happiness = testHappiness(pepperoni.happiness);
 	let cleanliness = testClean(pepperoni.cleanliness);
 	let sickness = testSick(pepperoni.sick);
+	if(personality.id == 11){
+		hunger = `${pepperoni.hunger}/${maximumValue}`;
+		happiness = `${pepperoni.happiness}/${maximumValue}`;
+		cleanliness = `${pepperoni.cleanliness}/${maximumValue}`;
+		sickness = `${pepperoni.sick}/5`;
+	}
 	//design embed
 	const pepEmbed = new MessageEmbed()
 		.setColor('#F099C8')
