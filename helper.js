@@ -221,6 +221,8 @@ function testHunger(value){
 		return hungerLevels[3];
 	if(value < maximumValue)
 		return hungerLevels[4];
+	else
+		return "OVERLOAD!";
 }
 function testHappiness(value){
 	if(value < maximumValue*0.2)
@@ -233,6 +235,8 @@ function testHappiness(value){
 		return happyLevels[3];
 	if(value < maximumValue)
 		return happyLevels[4];
+	else
+		return "OVERLOAD!";
 }
 function testClean(value){
 	if(value < maximumValue*0.2)
@@ -245,6 +249,8 @@ function testClean(value){
 		return cleanLevels[3];
 	if(value < maximumValue)
 		return cleanLevels[4];
+	else
+		return "OVERLOAD!";
 }
 function testSick(value){
 	if(value < 1)

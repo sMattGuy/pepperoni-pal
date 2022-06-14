@@ -170,10 +170,15 @@ module.exports = {
 							if(specialAttack == 'Average'){
 								let statAdd = RoundAttackerStats.attack + RoundAttackerStats.defense + RoundAttackerStats.evade;
 								let average = Math.ceil(statAdd / 3);
-								RoundAttackerStats.attack = average;
-								RoundAttackerStats.defense = average;
-								RoundAttackerStats.evade = average;
-								
+								for(let i=0;i<average;i++){
+									let random = Math.random();
+									if(random < 0.33)
+										RoundAttackerStats.attack += 1;
+									else if(random < 0.66)
+										RoundAttackerStats.defense += 1;
+									else
+										RoundAttackerStats.evade += 1;
+								}
 								damageCalc = Math.floor(Math.random()*3)+1;
 								damageCalc += RoundAttackerStats.attack;
 							}
