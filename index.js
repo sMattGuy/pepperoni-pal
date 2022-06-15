@@ -88,7 +88,7 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 				
 				if(pepperoniTag[i].alive == 1 && currentTime.getHours() == 0){
 					//if pepperoni still alive at 12am reward some xp
-					let timeAlive = pepperoniTag[i].startDate - currentTime.valueOf();
+					let timeAlive = currentTime.valueOf() - pepperoniTag[i].startDate;
 					let timeSeconds = Math.floor(timeAlive/1000);
 					let timeMins = Math.floor(timeSeconds/60);
 					let timeHours = Math.floor(timeMins/60);

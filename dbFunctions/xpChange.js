@@ -4,11 +4,11 @@ const Op = Sequelize.Op
 const sequelize = new Sequelize({
 	dialect: 'sqlite',
 	logging: false,
-	storage: 'database.sqlite',
+	storage: '../database.sqlite',
 });
 
-const pepperoni  = require('./model/pepperoni.js')(sequelize, Sequelize.DataTypes);
-const stats = require('./model/stats.js')(sequelize, Sequelize.DataTypes);
+const pepperoni  = require('../model/pepperoni.js')(sequelize, Sequelize.DataTypes);
+const stats = require('../model/stats.js')(sequelize, Sequelize.DataTypes);
 
 remove();
 async function remove(){
