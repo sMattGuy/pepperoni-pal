@@ -24,6 +24,10 @@ module.exports = {
 				await interaction.reply({content:'That Pepperoni doesn\'t exist!',ephemeral: true});
 				return;
 			}
+			if(pepperoniTag.alive == 0){
+				await interaction.reply({content:'That Pepperoni doesn\'t exist!',ephemeral: true});
+				return;
+			}
 			let birthday = new Date(pepperoniTag.startDate);
 			let personality = await pepperoniTag.getPersonality(pepperoniTag);
 			let pepEmbed = await getNewEmbed(pepperoniTag, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoniTag.name} Stats`, `${pepperoniTag.name}, Gen. ${pepperoniTag.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
