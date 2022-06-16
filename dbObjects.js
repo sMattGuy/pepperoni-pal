@@ -10,6 +10,7 @@ const pepperoni = require('./model/pepperoni.js')(sequelize, Sequelize.DataTypes
 const deaths = require('./model/deaths.js')(sequelize, Sequelize.DataTypes);
 const stats = require('./model/stats.js')(sequelize, Sequelize.DataTypes);
 const personality = require('./model/personality.js')(sequelize, Sequelize.DataTypes);
+const sleep = require('./model/sleep.js')(sequelize, Sequelize.DataTypes);
 
 Reflect.defineProperty(pepperoni.prototype, 'getStats', {
 	value: async pepperoniTag => {
@@ -51,6 +52,7 @@ Reflect.defineProperty(pepperoni.prototype, 'setStats', {
 		});
 	},
 });
+
 Reflect.defineProperty(pepperoni.prototype, 'getPersonality', {
 	value: async pepperoniTag => {
 		return await personality.findOne({where:{id:pepperoniTag.personality}});
@@ -63,4 +65,40 @@ Reflect.defineProperty(pepperoni.prototype, 'setPersonality', {
 		return pepperoniTag.save();
 	},
 });
-module.exports = { pepperoni, deaths, stats, personality };
+
+Reflect.defineProperty(pepperoni.prototype, 'startSleeping', {
+	value: async pepperoniTag => {
+		let sleepTag = await sleep.findOne({where:{userid: pepperoniTag.userid}});
+		if(!sleepTag){
+			sleepTag = await sleep.create({
+				userid: pepperoniTag.userid,
+				sleeping: 1,
+				startDate: Date.now(),
+			});
+		}
+		else{
+			sleepTag.sleeping = 1;
+			sleepTag.startDate = Date.now();
+			sleepTag.save();
+		}
+		return setTimeout(function(){
+			sleepTag.sleeping = 0;
+			sleepTag.save();
+		},21600000);
+	},
+});
+
+Reflect.defineProperty(pepperoni.prototype, 'checkSleeping', {
+	value: async pepperoniTag => {
+		let sleepTag = await sleep.findOne({where:{userid: pepperoniTag.userid}});
+		if(!sleepTag){
+			sleepTag = await sleep.create({
+				userid: pepperoniTag.userid,
+				sleeping: 0,
+				startDate: 0,
+			});
+		}
+		return {'sleep':sleepTag.sleeping, 'time':sleepTag.startDate};
+	},
+});
+module.exports = { pepperoni, deaths, stats, personality, sleep };

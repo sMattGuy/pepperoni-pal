@@ -1,7 +1,7 @@
 const { MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { pepperoni, deaths } = require('../dbObjects.js');
-const { giveExperience, lostGame } = require('../helper.js');
+const { giveExperience, lostGame, checkPepperoniSleeping } = require('../helper.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -40,6 +40,9 @@ module.exports = {
 			await interaction.reply({content: `You don't have a Pepperoni! Use another command to summon one!`,ephemeral: true});
 			return;
 		}
+		if(await checkPepperoniSleeping(pepperoniTag, interaction)){
+			return;
+		}
 		if(pepperoniTag.gaming == 1){
 			await interaction.reply({content: 'You are already in a game',ephemeral:true});
 			return;
@@ -47,6 +50,9 @@ module.exports = {
 		let enemyPepperoni = await pepperoni.findOne({where:{userid:opponentID}});
 		if(!enemyPepperoni || enemyPepperoni.alive == 0){
 			await interaction.reply({content: `Your opponent doesn't have a Pepperoni!`,ephemeral: true});
+			return;
+		}
+		if(await checkPepperoniSleeping(enemyPepperoni, interaction)){
 			return;
 		}
 		if(enemyPepperoni.gaming == 1){

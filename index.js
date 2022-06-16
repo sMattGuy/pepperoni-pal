@@ -42,63 +42,69 @@ client.on('interactionCreate', async interaction => {
 let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 	const pepperoniTag = await pepperoni.findAll();
 	for(let i=0;i<pepperoniTag.length;i++){
+		let sleepStatus = await pepperoniTag[i].checkSleeping(pepperoniTag[i]);
 		if(pepperoniTag[i].alive == 1){
-			try{
-				let pepperoniOwner = await client.users.fetch(pepperoniTag[i].userid);
-				let personality = await pepperoniTag[i].getPersonality(pepperoniTag[i]);
-				let prevSickness = pepperoniTag[i].sick;
-				
-				let feedAmount = Math.floor(Math.random()*3)+1;
-				let happyAmount = Math.floor(Math.random()*3)+1;
-				
-				if(personality.happinessMod > 0){
-					happyAmount++;
-				}
-				if(personality.happinessMod < 0){
-					happyAmount--;
-				}
-				
-				pepperoniTag[i].hunger -= feedAmount;
-				pepperoniTag[i].happiness -= happyAmount;
-				
-				let sickChance = 0.05;
-				if(personality.sickMod > 0){
-					sickChance += 0.05;
-				}
-				if(personality.sickMod < 0){
-					sickChance -= 0.04;
-				}
-				
-				if(Math.random() <= sickChance){
-					pepperoniTag[i].sick++;
-				}
-				if(pepperoniTag[i].hunger <= 5){
-					let randFood = foods[Math.floor(Math.random()*foods.length)];
-					await pepperoniOwner.send(`I'm hungwy -w- I weally want some ${randFood} -w-`);
-				}
-				if(pepperoniTag[i].happiness <= 5){
-					await pepperoniOwner.send(`I'm vewy boawed -w-`);
-				}
-				if(prevSickness != pepperoniTag[i].sick){
-					await pepperoniOwner.send(`I fweel swick umu`);
-				}
-				await hasDied(pepperoniTag[i], pepperoniOwner, true, deaths);
-				
-				let currentTime = new Date();
-				
-				if(pepperoniTag[i].alive == 1 && currentTime.getHours() == 0){
-					//if pepperoni still alive at 12am reward some xp
-					let timeAlive = currentTime.valueOf() - pepperoniTag[i].startDate;
-					let timeSeconds = Math.floor(timeAlive/1000);
-					let timeMins = Math.floor(timeSeconds/60);
-					let timeHours = Math.floor(timeMins/60);
-					let daysAlive = Math.floor(timeHours/24);
-					await giveExperience(pepperoniTag[i], pepperoniOwner, true, 10*daysAlive);
-				}
-				pepperoniTag[i].save();
+			if(sleepStatus.sleep == 0){
+				await giveExperience(pepperoniTag[i], pepperoniOwner, true, 1);
 			}
-			catch(err){
-				console.log(err);
+			else{
+				try{
+					let pepperoniOwner = await client.users.fetch(pepperoniTag[i].userid);
+					let personality = await pepperoniTag[i].getPersonality(pepperoniTag[i]);
+					let prevSickness = pepperoniTag[i].sick;
+					
+					let feedAmount = Math.floor(Math.random()*3)+1;
+					let happyAmount = Math.floor(Math.random()*3)+1;
+					
+					if(personality.happinessMod > 0){
+						happyAmount++;
+					}
+					if(personality.happinessMod < 0){
+						happyAmount--;
+					}
+					
+					pepperoniTag[i].hunger -= feedAmount;
+					pepperoniTag[i].happiness -= happyAmount;
+					
+					let sickChance = 0.05;
+					if(personality.sickMod > 0){
+						sickChance += 0.05;
+					}
+					if(personality.sickMod < 0){
+						sickChance -= 0.04;
+					}
+					
+					if(Math.random() <= sickChance){
+						pepperoniTag[i].sick++;
+					}
+					if(pepperoniTag[i].hunger <= 5){
+						let randFood = foods[Math.floor(Math.random()*foods.length)];
+						await pepperoniOwner.send(`I'm hungwy -w- I weally want some ${randFood} -w-`);
+					}
+					if(pepperoniTag[i].happiness <= 5){
+						await pepperoniOwner.send(`I'm vewy boawed -w-`);
+					}
+					if(prevSickness != pepperoniTag[i].sick){
+						await pepperoniOwner.send(`I fweel swick umu`);
+					}
+					await hasDied(pepperoniTag[i], pepperoniOwner, true, deaths);
+					
+					let currentTime = new Date();
+					
+					if(pepperoniTag[i].alive == 1 && currentTime.getHours() == 0){
+						//if pepperoni still alive at 12am reward some xp
+						let timeAlive = currentTime.valueOf() - pepperoniTag[i].startDate;
+						let timeSeconds = Math.floor(timeAlive/1000);
+						let timeMins = Math.floor(timeSeconds/60);
+						let timeHours = Math.floor(timeMins/60);
+						let daysAlive = Math.floor(timeHours/24);
+						await giveExperience(pepperoniTag[i], pepperoniOwner, true, 10*daysAlive);
+					}
+					pepperoniTag[i].save();
+				}
+				catch(err){
+					console.log(err);
+				}
 			}
 		}
 	}

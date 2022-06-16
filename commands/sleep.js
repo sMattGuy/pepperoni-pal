@@ -3,8 +3,8 @@ const { giveExperience, createNewPepperoni, hasDied, getNewEmbed, checkPepperoni
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('pet')
-		.setDescription('Lets you pet Pepperoni!'),
+		.setName('sleep')
+		.setDescription('Puts your Pepperoni to sleep...'),
 	async execute(interaction, pepperoni, deaths) {
 		if(!pepperoni || pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
@@ -13,7 +13,10 @@ module.exports = {
 			return;
 		}
 		else{
-			await interaction.reply({ content:`${pepperoni.name} liked that!`, files:['./images/dance.gif']});	
+			await pepperoni.startSleeping(pepperoni);
+			let personality = await pepperoni.getPersonality(pepperoni);
+			let pepEmbed = await getNewEmbed(pepperoni, personality, 'https://i.imgur.com/exOL68v.png', `Goodnight Pepperoni`, `${pepperoni.name} is off to bed!`);
+			await interaction.reply({ embeds: [pepEmbed] });	
 		}
 	},
 };

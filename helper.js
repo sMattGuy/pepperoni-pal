@@ -21,6 +21,7 @@ levelup https://i.imgur.com/8n1SZ6o.png
 lostBattle https://i.imgur.com/HaHoH17.png
 runaway https://i.imgur.com/5YdHXUk.png
 death_heartattack https://i.imgur.com/aaHBM1J.png
+sleeping https://i.imgur.com/exOL68v.png
 */
 
 const { pepperoni } = require('./dbObjects.js');
@@ -70,7 +71,7 @@ async function createNewPepperoni(pepperoniTag, interaction){
 	stats.evade = 0;
 	stats.save();
 	let pronoun = pronouns[Math.floor(Math.random()*pronouns.length)];
-	const pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://i.imgur.com/LoHGf48.png', `${pronoun} has risen!`, `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
+	const pepEmbed = await getNewEmbed(pepperoniTag, personality, 'https://i.imgur.com/LoHGf48.png', `${pronoun} has risen!`, `The ${pepperoniTag.generation} pepperoni, ${pepperoniTag.name} is born!`);
 	await interaction.followUp({ embeds: [pepEmbed]});
 	pepperoniTag.save();
 }
@@ -264,7 +265,7 @@ function testSick(value){
 	if(value >= 5)
 		return sickLevels[4];
 }
-function getNewEmbed(pepperoni, personality, thumbnail, title, description){
+async function getNewEmbed(pepperoni, personality, thumbnail, title, description){
 	//get flavor text for pepperoni
 	let hunger = testHunger(pepperoni.hunger);
 	let happiness = testHappiness(pepperoni.happiness);
@@ -275,6 +276,29 @@ function getNewEmbed(pepperoni, personality, thumbnail, title, description){
 		happiness = `${pepperoni.happiness}/${maximumValue}`;
 		cleanliness = `${pepperoni.cleanliness}/${maximumValue}`;
 		sickness = `${pepperoni.sick}/5`;
+	}
+	let sleepStatus = await pepperoni.checkSleeping(pepperoni);
+	if(sleepStatus.sleep == 1){
+		let timeDiff = Date.now() - sleepStatus.time;
+		let time = 21600000 - timeDiff;
+		let timeWord = 'seconds';
+		let timeSeconds = Math.floor(time/1000);
+		let timeMins = Math.floor(timeSeconds/60);
+		let timeHours = Math.floor(timeMins/60);
+		if(timeSeconds < 60){
+			time = timeSeconds;
+			timeWord = 'seconds';
+		}
+		else if(timeMins < 60){
+			time = timeMins;
+			timeWord = 'minutes';
+		}
+		else{
+			time = timeHours;
+			timeWord = 'hours';
+		}
+		title += ` (shh! ${pepperoni.name} is sleeping! ${time} ${timeWord} left)`;
+		thumbnail = 'https://i.imgur.com/exOL68v.png';
 	}
 	//design embed
 	const pepEmbed = new MessageEmbed()
@@ -347,4 +371,37 @@ async function giveExperience(pepperoni, interaction, hourly, xpAmount){
 	}
 	stats.save();
 }
-module.exports = {giveExperience,createNewPepperoni,hasDied,foods,testClean,testHappiness,testHunger,testSick,lostGame,getNewEmbed}
+async function checkPepperoniSleeping(pepperoniTag, interaction){
+	let sleepStatus = await pepperoniTag.checkSleeping(pepperoniTag);
+	if(sleepStatus.sleep == 1){
+		let timeDiff = Date.now() - sleepStatus.time;
+		let time = 21600000 - timeDiff;
+		let timeWord = 'seconds';
+		let timeSeconds = Math.floor(time/1000);
+		let timeMins = Math.floor(timeSeconds/60);
+		let timeHours = Math.floor(timeMins/60);
+		if(timeSeconds < 60){
+			time = timeSeconds;
+			timeWord = 'seconds';
+		}
+		else if(timeMins < 60){
+			time = timeMins;
+			timeWord = 'minutes';
+		}
+		else{
+			time = timeHours;
+			timeWord = 'hours';
+		}
+		const pepEmbed = new MessageEmbed()
+		.setColor('#F099C8')
+		.setTitle(`${pepperoniTag.name} is sleeping!`)
+		.setThumbnail('https://i.imgur.com/exOL68v.png')
+		.addFields(
+			{name:`Time Left`, value:`${pepperoniTag.name} should wake up in ${time} ${timeWord}...`},
+		);
+		await interaction.reply({ embeds: [pepEmbed]});
+		return true;
+	}
+	return false;
+}
+module.exports = {giveExperience,createNewPepperoni,hasDied,foods,testClean,testHappiness,testHunger,testSick,lostGame,getNewEmbed,checkPepperoniSleeping}

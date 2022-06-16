@@ -10,6 +10,7 @@ const pep = require('./model/pepperoni.js')(sequelize, Sequelize.DataTypes);
 const stat = require('./model/stats.js')(sequelize, Sequelize.DataTypes);
 const personality = require('./model/personality.js')(sequelize, Sequelize.DataTypes);
 require('./model/deaths.js')(sequelize, Sequelize.DataTypes);
+require('./model/sleep.js')(sequelize, Sequelize.DataTypes);
 
 const force = process.argv.includes('--force') || process.argv.includes('-f');
 const alter = process.argv.includes('--alter') || process.argv.includes('-a');

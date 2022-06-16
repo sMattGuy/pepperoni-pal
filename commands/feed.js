@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { giveExperience, createNewPepperoni, hasDied, getNewEmbed } = require('../helper.js');
+const { giveExperience, createNewPepperoni, hasDied, getNewEmbed, checkPepperoniSleeping } = require('../helper.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,6 +9,9 @@ module.exports = {
 		if(!pepperoni || pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
 		}
+		else if(await checkPepperoniSleeping(pepperoni, interaction)){
+			return;
+		}
 		else{
 			let personality = await pepperoni.getPersonality(pepperoni);
 			pepperoni.hunger += Math.floor(Math.random()*6)+10;
@@ -17,7 +20,7 @@ module.exports = {
 			if(personality.hungerMod < 0)
 				pepperoni.hunger -= Math.floor(Math.random()*5)+1;
 			
-			let pepEmbed = getNewEmbed(pepperoni, personality, 'https://www.imgur.com/6Du3IQg.png', `Dinner time!`, `${pepperoni.name} enjoyed a nice meal!`);
+			let pepEmbed = await getNewEmbed(pepperoni, personality, 'https://www.imgur.com/6Du3IQg.png', `Dinner time!`, `${pepperoni.name} enjoyed a nice meal!`);
 			await interaction.reply({ embeds: [pepEmbed] });	
 			await hasDied(pepperoni, interaction, false, deaths);
 			if(pepperoni.alive == 1){

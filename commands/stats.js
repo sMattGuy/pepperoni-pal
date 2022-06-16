@@ -26,7 +26,7 @@ module.exports = {
 			}
 			let birthday = new Date(pepperoniTag.startDate);
 			let personality = await pepperoniTag.getPersonality(pepperoniTag);
-			let pepEmbed = getNewEmbed(pepperoniTag, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoniTag.name} Stats`, `${pepperoniTag.name}, Gen. ${pepperoniTag.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
+			let pepEmbed = await getNewEmbed(pepperoniTag, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoniTag.name} Stats`, `${pepperoniTag.name}, Gen. ${pepperoniTag.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
 			
 			await interaction.reply({embeds:[pepEmbed]});
 			let stats = await pepperoniTag.getStats(pepperoniTag);
