@@ -1,7 +1,7 @@
 const { Formatters, MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { pepperoni, deaths } = require('../dbObjects.js');
-const { giveExperience, lostGame } = require('../helper.js');
+const { giveExperience, lostGame, checkPepperoniSleeping } = require('../helper.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()

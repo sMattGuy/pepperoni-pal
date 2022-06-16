@@ -81,10 +81,7 @@ Reflect.defineProperty(pepperoni.prototype, 'startSleeping', {
 			sleepTag.startDate = Date.now();
 			sleepTag.save();
 		}
-		return setTimeout(function(){
-			sleepTag.sleeping = 0;
-			sleepTag.save();
-		},21600000);
+		return
 	},
 });
 
@@ -101,4 +98,21 @@ Reflect.defineProperty(pepperoni.prototype, 'checkSleeping', {
 		return {'sleep':sleepTag.sleeping, 'time':sleepTag.startDate};
 	},
 });
+Reflect.defineProperty(pepperoni.prototype, 'wakeUp', {
+	value: async pepperoniTag => {
+		let sleepTag = await sleep.findOne({where:{userid: pepperoniTag.userid}});
+		if(!sleepTag){
+			sleepTag = await sleep.create({
+				userid: pepperoniTag.userid,
+				sleeping: 0,
+				startDate: 0,
+			});
+		}
+		else{
+			sleepTag.sleeping = 0;
+		}
+		return sleepTag.save();
+	},
+});
+
 module.exports = { pepperoni, deaths, stats, personality, sleep };

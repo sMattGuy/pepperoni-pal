@@ -15,7 +15,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
-	// Set a new item in the Collection
+	// Set a new item in the Collection`
 	// With the key as the command name and the value as the exported module
 	client.commands.set(command.data.name, command);
 }
@@ -38,7 +38,17 @@ client.on('interactionCreate', async interaction => {
 		await interaction.followUp({content:'There was an error with this command!',ephemeral:true});
 	}
 });
-
+let pepperoniWakeUp = new cron.CronJob('* * * * *', async () => {
+	const pepperoniTag = await pepperoni.findAll({attributes:['userid']});
+	for(let i=0;i<pepperoniTag.length;i++){
+		let sleepStatus = await pepperoniTag[i].checkSleeping(pepperoniTag[i]);
+		if(sleepStatus.sleep == 1){
+			if(Date.now() > sleepStatus.time + 21600000){
+				await pepperoniTag[i].wakeUp(pepperoniTag[i]);
+			}
+		}
+	}
+});
 let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 	const pepperoniTag = await pepperoni.findAll();
 	for(let i=0;i<pepperoniTag.length;i++){
@@ -111,5 +121,6 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 	}
 });
 hourlyDrain.start();
+pepperoniWakeUp.start();
 client.login(token);
 

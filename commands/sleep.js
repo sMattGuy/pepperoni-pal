@@ -8,8 +8,10 @@ module.exports = {
 	async execute(interaction, pepperoni, deaths) {
 		if(!pepperoni || pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
+			return;
 		}
-		else if(await checkPepperoniSleeping(pepperoni, interaction)){
+		let sleeping = await checkPepperoniSleeping(pepperoni, interaction);
+		if(sleeping){
 			return;
 		}
 		else{
