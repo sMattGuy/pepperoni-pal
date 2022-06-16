@@ -44,7 +44,7 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 	for(let i=0;i<pepperoniTag.length;i++){
 		let sleepStatus = await pepperoniTag[i].checkSleeping(pepperoniTag[i]);
 		if(pepperoniTag[i].alive == 1){
-			if(sleepStatus.sleep == 0){
+			if(sleepStatus.sleep == 1){
 				let pepperoniOwner = await client.users.fetch(pepperoniTag[i].userid);
 				await giveExperience(pepperoniTag[i], pepperoniOwner, true, 1);
 			}
