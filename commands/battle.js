@@ -180,9 +180,12 @@ module.exports = {
 								if(RoundAttackerStats.evade > 0)
 									RoundDefenderStats.evade -= RoundAttackerStats.evade;
 								
-								RoundAttackerStats.attack = 0;
-								RoundAttackerStats.defense = 0;
-								RoundAttackerStats.evade = 0;
+								if(RoundAttackerStats.attack > 0)
+									RoundAttackerStats.attack = 0;
+								if(RoundAttackerStats.defense > 0)
+									RoundAttackerStats.defense = 0;
+								if(RoundAttackerStats.evade > 0)
+									RoundAttackerStats.evade = 0;
 								
 								damageCalc = Math.floor(Math.random()*3)+1;
 								damageCalc += RoundAttackerStats.attack;
