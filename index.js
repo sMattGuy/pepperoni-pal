@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const { giveExperience, hasDied, foods } = require('./helper.js');
+const { giveExperience, hasDied, foods, getNewEmbed } = require('./helper.js');
 const { pepperoni, deaths } = require('./dbObjects.js');
 const cron = require('cron')
 
@@ -31,7 +31,7 @@ client.on('interactionCreate', async interaction => {
 	try{
 		const pepperoniTag = await pepperoni.findOne({where:{"userid":interaction.user.id}});
 		await command.execute(interaction, pepperoniTag, deaths);
-		if(interaction.commandName != 'deathlog' && pepperoniTag)
+		if(interaction.commandName != 'deathlog' && pepperoniTag && interaction.commandName != 'help')
 			pepperoniTag.save();
 	} catch(error){
 		console.error(error);
@@ -39,12 +39,19 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 let pepperoniWakeUp = new cron.CronJob('* * * * *', async () => {
-	const pepperoniTag = await pepperoni.findAll({attributes:['userid']});
+	const pepperoniTag = await pepperoni.findAll();
 	for(let i=0;i<pepperoniTag.length;i++){
 		let sleepStatus = await pepperoniTag[i].checkSleeping(pepperoniTag[i]);
 		if(sleepStatus.sleep == 1){
 			if(Date.now() > sleepStatus.time + 21600000){
 				await pepperoniTag[i].wakeUp(pepperoniTag[i]);
+				
+				let pepperoniOwner = await client.users.fetch(pepperoniTag[i].userid);
+				let personality = await pepperoniTag[i].getPersonality(pepperoniTag[i]);
+				
+				let pepEmbed = await getNewEmbed(pepperoniTag[i], personality, 'https://i.imgur.com/EEO45hR.png', `Good Morning Pepperoni!`, `${pepperoniTag[i].name} has woken up!`);
+				
+				await pepperoniOwner.send({ embeds: [pepEmbed] });	
 			}
 		}
 	}

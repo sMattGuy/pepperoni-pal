@@ -320,6 +320,8 @@ async function getNewEmbed(pepperoni, personality, thumbnail, title, description
 async function giveExperience(pepperoni, interaction, hourly, xpAmount){
 	let stats = await pepperoni.getStats(pepperoni);
 	stats.experience += xpAmount;
+	if(stats.experience < 0)
+		stats.experience = 0;
 	if(stats.experience >= stats.nextLevel){
 		//user has leveled up
 		let levelsToGain = 0;
