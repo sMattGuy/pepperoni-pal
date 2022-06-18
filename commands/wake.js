@@ -25,6 +25,8 @@ module.exports = {
 			await pepperoni.wakeUp(pepperoni);
 			pepperoni.happiness -= unhappyEffect;
 			
+			let xpDrain = 5 - timeHours;
+			await giveExperience(pepperoni, interaction, false, xpDrain);
 			let pepEmbed = await getNewEmbed(pepperoni, personality, 'https://i.imgur.com/qcr2PiR.png', `Wake up, Pepperoni!`, `${pepperoni.name} has been forced awake, this is really upsetting!`);
 			await interaction.reply({ embeds: [pepEmbed] });	
 			await hasDied(pepperoni, interaction, false, deaths);
