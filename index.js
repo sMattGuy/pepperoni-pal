@@ -91,7 +91,7 @@ let hourlyDrain = new cron.CronJob('0 * * * *', async () => {
 					if(personality.sickMod < 0){
 						sickChance -= 0.04;
 					}
-					
+					sickChance += (pepperoniTag[i].sick * 0.1);	
 					if(Math.random() <= sickChance){
 						pepperoniTag[i].sick++;
 					}

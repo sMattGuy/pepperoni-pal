@@ -34,6 +34,7 @@ module.exports = {
 			if(personality.sickMod < 0){
 				sickChance -= 0.04;
 			}
+			sickChance += (pepperoni.sick * 0.1);
 			if(Math.random() <= sickChance){
 				pepperoni.sick += 1;
 				descriptionContents += '\n(He also seems to have a cough?)';
