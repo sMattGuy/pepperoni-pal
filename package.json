@@ -5,6 +5,7 @@
     "cron": "^2.0.0",
     "discord-api-types": "^0.33.2",
     "discord.js": "^13.7.0",
+    "haiku-detect": "^1.1.0",
     "sequelize": "^6.20.1",
     "sqlite3": "^5.0.8"
   }

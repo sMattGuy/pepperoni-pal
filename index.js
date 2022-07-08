@@ -3,7 +3,8 @@ const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const { giveExperience, hasDied, foods, getNewEmbed } = require('./helper.js');
 const { pepperoni, deaths } = require('./dbObjects.js');
-const cron = require('cron')
+const cron = require('cron');
+const haiku = require('haiku-detect');
 
 const client = new Client({intents:[Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS]});
 
@@ -24,30 +25,15 @@ client.once('ready', () => {
 	console.log('Ready');
 });
 client.on('messageCreate', async message => {
-	const syllableRegex = /[^aeiouy]*[aeiouy]+(?:[^aeiouy]*$|[^aeiouy](?=[^aeiouy]))?/gi;
-	function syllabify(words) {
-		 return words.match(syllableRegex);
+	if(message.content.length == 0 || message.author.bot)
+		return;
+	let foundHaiku = haiku.detect(message.content);
+	if(foundHaiku){
+		let cleanHaiku = haiku.format(message.content);
+		let formatedHaiku = '*' + cleanHaiku[0] + '\n' + cleanHaiku[1] + '\n' + cleanHaiku[2] + '\n\nYou wrote a haiku!*';
+		message.channel.send(formatedHaiku);
 	}
-	let syllables = message.content.split(" ").map(syllabify);
-	let counter = 0
-	syllables.forEach(i => {
-		counter += i.length;
-	});
-	if(counter == 17){
-		//got a haiku
-		let resultHaiku = `*`;
-		syllables.forEach(i => {
-			i.forEach(j => {
-				resultHaiku += j;
-				counter--;
-			});
-			if(counter == 12 || counter == 5)
-				resultHaiku += '\n';
-		});
-		resultHaiku += `\nYou wrote a haiku!*`;
-		message.channel.send(resultHaiku);
-	}
-}
+});
 client.on('interactionCreate', async interaction => {
 	if(!interaction.isCommand()) return;
 	const command = client.commands.get(interaction.commandName);
