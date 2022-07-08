@@ -23,7 +23,31 @@ for (const file of commandFiles) {
 client.once('ready', () => {
 	console.log('Ready');
 });
-
+client.on('messageCreate', async message => {
+	const syllableRegex = /[^aeiouy]*[aeiouy]+(?:[^aeiouy]*$|[^aeiouy](?=[^aeiouy]))?/gi;
+	function syllabify(words) {
+		 return words.match(syllableRegex);
+	}
+	let syllables = message.content.split(" ").map(syllabify);
+	let counter = 0
+	syllables.forEach(i => {
+		counter += i.length;
+	});
+	if(counter == 17){
+		//got a haiku
+		let resultHaiku = `*`;
+		syllables.forEach(i => {
+			i.forEach(j => {
+				resultHaiku += j;
+				counter--;
+			});
+			if(counter == 12 || counter == 5)
+				resultHaiku += '\n';
+		});
+		resultHaiku += `\nYou wrote a haiku!*`;
+		message.channel.send(resultHaiku);
+	}
+}
 client.on('interactionCreate', async interaction => {
 	if(!interaction.isCommand()) return;
 	const command = client.commands.get(interaction.commandName);

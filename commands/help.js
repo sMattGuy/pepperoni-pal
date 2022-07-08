@@ -95,7 +95,7 @@ module.exports = {
 		.setDescription('Shows you the ropes of owning a Pepperoni!'),
 	async execute(interaction, pepperoni, deaths) {
 		let pageIndex = 0;
-		const flipPages = i => i.customId === 'next' || i.customId === 'prev';
+		const flipPages = i => (i.customId === 'next' || i.customId === 'prev') && i.user.id === interaction.user.id;
 		const pageCollector = await interaction.channel.createMessageComponentCollector({filter:flipPages});
 		
 		const nextPage = new MessageButton()
