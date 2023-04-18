@@ -27,7 +27,13 @@ client.once('ready', () => {
 client.on('messageCreate', async message => {
 	if(message.content.length == 0 || message.author.bot)
 		return;
-	let foundHaiku = haiku.detect(message.content);
+	let foundHaiku 
+	try{
+		foundHaiku = haiku.detect(message.content);
+	}
+	catch(e){
+		foundHaiku = false;
+	}
 	if(foundHaiku){
 		let cleanHaiku = haiku.format(message.content);
 		let formatedHaiku = '*' + cleanHaiku[0] + '\n' + cleanHaiku[1] + '\n' + cleanHaiku[2] + '\n\nYou wrote a haiku!*';
