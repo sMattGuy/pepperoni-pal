@@ -1,12 +1,9 @@
 {
   "dependencies": {
-    "@discordjs/builders": "^0.13.0",
-    "@discordjs/rest": "^0.4.1",
-    "cron": "^2.0.0",
-    "discord-api-types": "^0.33.2",
-    "discord.js": "^13.7.0",
+    "cron": "^2.3.0",
+    "discord.js": "^14.9.0",
     "haiku-detect": "^1.1.0",
-    "sequelize": "^6.20.1",
-    "sqlite3": "^5.0.8"
+    "sequelize": "^6.31.0",
+    "sqlite3": "^5.1.6"
   }
 }

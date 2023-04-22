@@ -1,14 +1,12 @@
 const fs = require('node:fs');
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, GatewayIntentBits, Events } = require('discord.js');
 const { token } = require('./config.json');
 const { giveExperience, hasDied, foods, getNewEmbed } = require('./helper.js');
 const { pepperoni, deaths } = require('./dbObjects.js');
 const cron = require('cron');
 const haiku = require('haiku-detect');
 
-const client = new Client({intents:[Intents.FLAGS.GUILDS,Intents.FLAGS.GUILD_MESSAGES,Intents.FLAGS.GUILD_MESSAGE_REACTIONS,Intents.FLAGS.GUILD_MEMBERS]});
-
-const mainChannel = '119870239298027520';
+const client = new Client({intents:[GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent]});
 
 client.commands = new Collection();
 
@@ -21,10 +19,10 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-client.once('ready', () => {
+client.once(Events.ClientReady, () => {
 	console.log('Ready');
 });
-client.on('messageCreate', async message => {
+client.on(Events.MessageCreate, async message => {
 	if(message.content.length == 0 || message.author.bot)
 		return;
 	let foundHaiku 
@@ -40,7 +38,7 @@ client.on('messageCreate', async message => {
 		message.channel.send(formatedHaiku);
 	}
 });
-client.on('interactionCreate', async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
 	if(!interaction.isCommand()) return;
 	const command = client.commands.get(interaction.commandName);
 	if(!command) return;

@@ -1,5 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { createNewPepperoni, getNewEmbed} = require('../helper.js')
 const { pepperoni } = require('../dbObjects.js');
 module.exports = {
@@ -35,7 +34,7 @@ module.exports = {
 			await interaction.reply({embeds:[pepEmbed]});
 			let stats = await pepperoniTag.getStats(pepperoniTag);
 
-			let statEmbed = new MessageEmbed()
+			let statEmbed = new EmbedBuilder()
 				.setColor('#F099C8')
 				.setTitle('Stats')
 				.addFields(

@@ -1,6 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { codeBlock, SlashCommandBuilder } = require('discord.js');
 const { pepperoni } = require('../dbObjects.js');
-const { Formatters } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -74,7 +73,7 @@ module.exports = {
 					break;
 				}
 			}
-			interaction.editReply({content:Formatters.codeBlock(`${leaderboardMessage}`) });
+			interaction.editReply({content:codeBlock(`${leaderboardMessage}`) });
 		}
 	},
 };

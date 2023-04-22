@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 /*
 IMAGE LINKS
@@ -39,7 +39,7 @@ deathMap.set('ranAway', 'https://i.imgur.com/5YdHXUk.png');
 deathMap.set('heartAttack', 'https://i.imgur.com/aaHBM1J.png');
 
 const petNames = ["Pepperoni","Dusty","Rocky","Miffy","Bosco","Walter","Chanel","Bruno","Morbius","Pebbles","Guava Flame","Poopy","Momo","Dumbass","Misty","Joji","Fred","Throwback","Cooper","Stinky","Gordon","Jessie","Steve","Ian","Gildian","Peter","Matt","Dan","Momi","Yato"];
-const pronouns = ["He","She","They","It"];
+const pronouns = ["He","She","It"];
 async function createNewPepperoni(pepperoniTag, interaction){
 	await interaction.reply({content:`Looks like There isn't a Pepperoni alive right now. Let me reincarnate him quickly...`});
 	let generation = 1;
@@ -84,7 +84,7 @@ async function lostGame(pepperoniTag, interaction, deaths, gameName){
 		pepperoniTag.cleanliness = 15;
 		pepperoniTag.sick = 0;
 		pepperoniTag.save();
-		const pepEmbed = new MessageEmbed()
+		const pepEmbed = new EmbedBuilder()
 			.setColor('#FF2222')
 			.setTitle('Dio Activates!')
 			.setDescription(`${pepperoniTag.name} has been saved from ${gameName} by Dio! The Dio turns to dust in the process...`)
@@ -94,7 +94,7 @@ async function lostGame(pepperoniTag, interaction, deaths, gameName){
 	}
 	else{
 		await recordDeath(pepperoniTag, gameName, deaths, interaction, true);
-		const pepEmbed = new MessageEmbed()
+		const pepEmbed = new EmbedBuilder()
 			.setColor('#FF2222')
 			.setTitle('Game Over!')
 			.setDescription(`${pepperoniTag.name} has suffered from ${gameName}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
@@ -114,7 +114,7 @@ async function hasDied(pepperoniTag, interaction, hourly, deaths){
 			pepperoniTag.cleanliness = 15;
 			pepperoniTag.sick = 0;
 			pepperoniTag.save();
-			const pepEmbed = new MessageEmbed()
+			const pepEmbed = new EmbedBuilder()
 				.setColor('#FF2222')
 				.setTitle('Dio Activates!')
 				.setDescription(`${pepperoniTag.name} has been saved from ${results.cause} by Dio! The Dio turns to dust in the process...`)
@@ -134,7 +134,7 @@ async function hasDied(pepperoniTag, interaction, hourly, deaths){
 		}
 		else{
 			await recordDeath(pepperoniTag, results.cause, deaths, interaction, hourly);
-			const pepEmbed = new MessageEmbed()
+			const pepEmbed = new EmbedBuilder()
 				.setColor('#FF2222')
 				.setTitle('Game Over!')
 				.setDescription(`${pepperoniTag.name} has suffered from ${results.cause}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
@@ -301,7 +301,7 @@ async function getNewEmbed(pepperoni, personality, thumbnail, title, description
 		thumbnail = 'https://i.imgur.com/exOL68v.png';
 	}
 	//design embed
-	const pepEmbed = new MessageEmbed()
+	const pepEmbed = new EmbedBuilder()
 		.setColor('#F099C8')
 		.setTitle(title)
 		.setDescription(description)
@@ -348,7 +348,7 @@ async function giveExperience(pepperoni, interaction, hourly, xpAmount){
 		}
 		if(stats.experience < 0)
 			stats.experience = 0;
-		const pepEmbed = new MessageEmbed()
+		const pepEmbed = new EmbedBuilder()
 		.setColor('#F099C8')
 		.setTitle(`Congratulations! ${pepperoni.name} has leveled up!`)
 		.setThumbnail('https://i.imgur.com/8n1SZ6o.png')
@@ -394,7 +394,7 @@ async function checkPepperoniSleeping(pepperoniTag, interaction){
 			time = timeHours;
 			timeWord = 'hours';
 		}
-		const pepEmbed = new MessageEmbed()
+		const pepEmbed = new EmbedBuilder()
 		.setColor('#F099C8')
 		.setTitle(`${pepperoniTag.name} is sleeping!`)
 		.setThumbnail('https://i.imgur.com/exOL68v.png')
