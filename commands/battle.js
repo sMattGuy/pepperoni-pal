@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, Formatters, MessageActionRow, MessageButton } = require('discord.js');
+const { SlashCommandBuilder, codeBlock, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const { pepperoni, deaths } = require('../dbObjects.js');
 const { giveExperience, lostGame, checkPepperoniSleeping } = require('../helper.js');
 
@@ -69,13 +69,13 @@ module.exports = {
 		await enemyPepperoni.save();
 		//get the acceptance of battle
 		const startFilter = i => i.user.id === opponentID && (i.customId === 'accept' || i.customId === 'deny');
-		const accRow = new MessageActionRow()
+		const accRow = new ActionRowBuilder()
 			.addComponents(
-			new MessageButton()
+			new ButtonBuilder()
 				.setCustomId('accept')
 				.setLabel('Accept')
 				.setStyle('SUCCESS'),
-			new MessageButton()
+			new ButtonBuilder()
 				.setCustomId('deny')
 				.setLabel('Deny')
 				.setStyle('DANGER'),
@@ -133,21 +133,21 @@ module.exports = {
 			async function doAttack(RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerSpecial, RoundAttackerHealth, RoundAttackerPersonality, RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderHealth, RoundDefenderPersonality, RoundDefenderSpecial){
 				let damageCalc = 0;
 				const defendFilter = i => i.customId === 'defend' || i.customId === 'evade';
-				const defendRow = new MessageActionRow()
+				const defendRow = new ActionRowBuilder()
 					.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('defend')
 						.setLabel('Defend')
 						.setStyle('PRIMARY'),
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('evade')
 						.setLabel('Evade')
 						.setStyle('PRIMARY'),
 				);
 				const attackFilter = i => i.customId === 'attack' || i.customId === 'special';
-				const attackRow = new MessageActionRow()
+				const attackRow = new ActionRowBuilder()
 					.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId('attack')
 						.setLabel('Attack')
 						.setStyle('PRIMARY'),
@@ -155,13 +155,13 @@ module.exports = {
 				//challenger is attacking
 				if(RoundAttackerSpecial == 0 && (RoundAttackerPersonality.id != 10 && RoundAttackerPersonality.id != 11)){
 					attackRow.addComponents(
-						new MessageButton()
+						new ButtonBuilder()
 						.setCustomId('special')
 						.setLabel('Skill')
 						.setStyle('PRIMARY'),)
 				}
 				const attackerCollector = await RoundAttackerDM.createMessageComponentCollector({attackFilter,time:60000,max:1});
-				RoundAttacker.send({content:Formatters.codeBlock(`Select an option!\nYour HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}\nEnemy HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}`),components:[attackRow]}).then(challMsg => {
+				RoundAttacker.send({content:codeBlock(`Select an option!\nYour HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}\nEnemy HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}`),components:[attackRow]}).then(challMsg => {
 					attackerCollector.once('collect', async bi => {
 						damageCalc = 0;
 						let usedSpecialAbility = false;
@@ -232,8 +232,8 @@ module.exports = {
 									escaped = 3
 								if(escapeBattle <= escaped){
 									//escaped battle
-									await bi.update({content:Formatters.codeBlock(`You Escaped from the battle!`),components:[]});
-									await RoundDefender.send({content:Formatters.codeBlock(`Your opponent ran from the battle using their skill!`),components:[]});
+									await bi.update({content:codeBlock(`You Escaped from the battle!`),components:[]});
+									await RoundDefender.send({content:codeBlock(`Your opponent ran from the battle using their skill!`),components:[]});
 									if(RoundAttacker == challenger){
 										await interaction.editReply({content:`${challengerName} has fled from ${opponentName}!`});
 									}
@@ -258,7 +258,7 @@ module.exports = {
 						}
 						if(damageCalc < 0)
 							damageCalc = 0;
-						bi.update({content:Formatters.codeBlock(`You rolled ${damageCalc} for attack! Let's see what your opponent does...`),components:[]});
+						bi.update({content:codeBlock(`You rolled ${damageCalc} for attack! Let's see what your opponent does...`),components:[]});
 						
 						//start opponents choice
 						if(damageCalc == 0){	
@@ -266,7 +266,7 @@ module.exports = {
 							if(usedSpecialAbility){
 								filler += `\nYour opponent used their special: ${RoundAttackerPersonality.special}!`;
 							}
-							RoundDefender.send({content:Formatters.codeBlock(filler)});
+							RoundDefender.send({content:codeBlock(filler)});
 							doAttack(RoundDefender, RoundDefenderDM, RoundDefenderStats, RoundDefenderSpecial, RoundDefenderHealth, RoundDefenderPersonality, RoundAttacker, RoundAttackerDM, RoundAttackerStats, RoundAttackerHealth, RoundAttackerPersonality, RoundAttackerSpecial);
 						}
 						else{
@@ -297,7 +297,7 @@ module.exports = {
 								RoundDefenderStats.evade += opponentBonusEvade;
 							}
 							
-							RoundDefender.send({content:Formatters.codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
+							RoundDefender.send({content:codeBlock(`Select an option! ${filler}\nYour HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}\nEnemy HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}`),components:[defendRow]}).then(oppMsg => {
 								defenderCollector.once('collect', async obi => {
 									let defenseAmount = Math.floor(Math.random()*6)+1;
 									if(obi.customId == 'defend'){
@@ -338,8 +338,8 @@ module.exports = {
 										AttackerTurnDescription += ` You did 1 damage from Poison!`;
 									}
 									
-									await bi.editReply({content:Formatters.codeBlock(AttackerTurnDescription),components:[]});
-									await obi.update({content:Formatters.codeBlock(DefenderTurnDescription),components:[]});
+									await bi.editReply({content:codeBlock(AttackerTurnDescription),components:[]});
+									await obi.update({content:codeBlock(DefenderTurnDescription),components:[]});
 									
 									RoundDefenderHealth -= damageCalc;
 									
@@ -372,8 +372,8 @@ module.exports = {
 							
 									if(RoundDefenderHealth <= 0){
 										//oppoenent has died
-										await bi.editReply({content:Formatters.codeBlock(`Your opponent has died, you have won!`),components:[]});
-										await obi.editReply({content:Formatters.codeBlock(`You have died, GAMEOVER!`),components:[]});
+										await bi.editReply({content:codeBlock(`Your opponent has died, you have won!`),components:[]});
+										await obi.editReply({content:codeBlock(`You have died, GAMEOVER!`),components:[]});
 										pepperoniTag.gaming = 0;
 										enemyPepperoni.gaming = 0;
 										await pepperoniTag.save();

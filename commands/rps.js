@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, MessageActionRow, MessageButton } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const { pepperoni, deaths } = require('../dbObjects.js');
 const { giveExperience, lostGame, checkPepperoniSleeping } = require('../helper.js');
 
@@ -67,13 +67,13 @@ module.exports = {
 		await interaction.reply(`Starting RPS`);
 		//get the acceptance of battle
 		const startFilter = i => i.user.id === opponentID && (i.customId === 'accept' || i.customId === 'deny');
-		const accRow = new MessageActionRow()
+		const accRow = new ActionRowBuilder()
 			.addComponents(
-			new MessageButton()
+			new ButtonBuilder()
 				.setCustomId('accept')
 				.setLabel('Accept')
 				.setStyle('SUCCESS'),
-			new MessageButton()
+			new ButtonBuilder()
 				.setCustomId('deny')
 				.setLabel('Deny')
 				.setStyle('DANGER'),
@@ -107,17 +107,17 @@ module.exports = {
 			//begin battle
 			interaction.editReply({content:`Getting challengers throw, please wait!`,components:[]});
 			const filter = i => i.customId === 'rock' || i.customId === 'paper' || i.customId === 'scissors';
-			const gameRow = new MessageActionRow()
+			const gameRow = new ActionRowBuilder()
 				.addComponents(
-				new MessageButton()
+				new ButtonBuilder()
 					.setCustomId('rock')
 					.setLabel('Rock')
 					.setStyle('PRIMARY'),
-				new MessageButton()
+				new ButtonBuilder()
 					.setCustomId('paper')
 					.setLabel('Paper')
 					.setStyle('PRIMARY'),
-				new MessageButton()
+				new ButtonBuilder()
 					.setCustomId('scissors')
 					.setLabel('Scissors')
 					.setStyle('PRIMARY'),
