@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const { ButtonStyle, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const { pepperoni, deaths } = require('../dbObjects.js');
 const { giveExperience, lostGame, checkPepperoniSleeping } = require('../helper.js');
 
@@ -72,11 +72,11 @@ module.exports = {
 			new ButtonBuilder()
 				.setCustomId('accept')
 				.setLabel('Accept')
-				.setStyle('SUCCESS'),
+				.setStyle(ButtonStyle.Success),
 			new ButtonBuilder()
 				.setCustomId('deny')
 				.setLabel('Deny')
-				.setStyle('DANGER'),
+				.setStyle(ButtonStyle.Danger),
 		);
 		const accCollector = await interaction.channel.createMessageComponentCollector({filter:startFilter, time: 60000});
 		await interaction.editReply({content:`${optionOpp}! You have been challenged to DEADLY RPS (Losing means death!)! Click 'accept' to accept the rock paper scissors battle, or 'deny' to refuse the battle! You have 1 min to respond!`,components:[accRow]}).then(msg => {
@@ -112,15 +112,15 @@ module.exports = {
 				new ButtonBuilder()
 					.setCustomId('rock')
 					.setLabel('Rock')
-					.setStyle('PRIMARY'),
+					.setStyle(ButtonStyle.Primary),
 				new ButtonBuilder()
 					.setCustomId('paper')
 					.setLabel('Paper')
-					.setStyle('PRIMARY'),
+					.setStyle(ButtonStyle.Primary),
 				new ButtonBuilder()
 					.setCustomId('scissors')
 					.setLabel('Scissors')
-					.setStyle('PRIMARY'),
+					.setStyle(ButtonStyle.Primary),
 			);
 			const challDM = await challenger.createDM();
 			const oppDM = await optionOpp.createDM();

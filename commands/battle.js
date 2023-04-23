@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, codeBlock, ActionRowBuilder, ButtonBuilder } = require('discord.js');
+const { ButtonStyle, SlashCommandBuilder, codeBlock, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const { pepperoni, deaths } = require('../dbObjects.js');
 const { giveExperience, lostGame, checkPepperoniSleeping } = require('../helper.js');
 
@@ -74,11 +74,11 @@ module.exports = {
 			new ButtonBuilder()
 				.setCustomId('accept')
 				.setLabel('Accept')
-				.setStyle('SUCCESS'),
+				.setStyle(ButtonStyle.Success),
 			new ButtonBuilder()
 				.setCustomId('deny')
 				.setLabel('Deny')
-				.setStyle('DANGER'),
+				.setStyle(ButtonStyle.Danger),
 		);
 		const accCollector = await interaction.channel.createMessageComponentCollector({filter:startFilter, time: 60000, max:1});
 		await interaction.editReply({content:`${optionOpp}! You have been challenged to a DEADLY BATTLE (Losing means death!)! Click 'accept' to accept the battle, or 'deny' to refuse the battle! You have 1 min to respond!`,components:[accRow]}).then(msg => {
@@ -138,11 +138,11 @@ module.exports = {
 					new ButtonBuilder()
 						.setCustomId('defend')
 						.setLabel('Defend')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 					new ButtonBuilder()
 						.setCustomId('evade')
 						.setLabel('Evade')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 				);
 				const attackFilter = i => i.customId === 'attack' || i.customId === 'special';
 				const attackRow = new ActionRowBuilder()
@@ -150,7 +150,7 @@ module.exports = {
 					new ButtonBuilder()
 						.setCustomId('attack')
 						.setLabel('Attack')
-						.setStyle('PRIMARY'),
+						.setStyle(ButtonStyle.Primary),
 				);
 				//challenger is attacking
 				if(RoundAttackerSpecial == 0 && (RoundAttackerPersonality.id != 10 && RoundAttackerPersonality.id != 11)){
@@ -158,7 +158,7 @@ module.exports = {
 						new ButtonBuilder()
 						.setCustomId('special')
 						.setLabel('Skill')
-						.setStyle('PRIMARY'),)
+						.setStyle(ButtonStyle.Primary),)
 				}
 				const attackerCollector = await RoundAttackerDM.createMessageComponentCollector({attackFilter,time:60000,max:1});
 				RoundAttacker.send({content:codeBlock(`Select an option!\nYour HP:${RoundAttackerHealth}\nATK:${RoundAttackerStats.attack} DEF:${RoundAttackerStats.defense} EVD:${RoundAttackerStats.evade}\nSkill:${RoundAttackerPersonality.special}\nDesc:${RoundAttackerPersonality.specialDescription}\nEnemy HP:${RoundDefenderHealth}\nATK:${RoundDefenderStats.attack} DEF:${RoundDefenderStats.defense} EVD:${RoundDefenderStats.evade}\nSkill:${RoundDefenderPersonality.special}\nDesc:${RoundDefenderPersonality.specialDescription}`),components:[attackRow]}).then(challMsg => {

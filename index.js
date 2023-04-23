@@ -19,8 +19,13 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-client.once(Events.ClientReady, () => {
+client.once(Events.ClientReady, async () => {
 	console.log('Ready');
+	let pepperoniGamerReset = await pepperoni.findAll();
+	for(let i=0;i<pepperoniGamerReset.length;i++){
+		pepperoniGamerReset[i].gaming = 0;
+		pepperoniGamerReset[i].save();
+	}
 });
 client.on(Events.MessageCreate, async message => {
 	if(message.content.length == 0 || message.author.bot)
