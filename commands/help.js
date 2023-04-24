@@ -5,6 +5,6 @@ module.exports = {
 		.setName('help')
 		.setDescription('Sends you see the help link!'),
 	async execute(interaction, pepperoni, deaths) {
-		await interaction.reply({ content:`Heres the link! https://matthewflammia.xyz/mediawiki/index.php/Pepperoni_Pal` });	
+		await interaction.reply({ content:`Heres the link! https://www.matthewflammia.xyz/mediawiki/index.php/Pepperoni_Pal` });	
 	},
 };
