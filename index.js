@@ -69,8 +69,8 @@ let pepperoniWakeUp = new cron.CronJob('* * * * *', async () => {
 				let personality = await pepperoniTag[i].getPersonality(pepperoniTag[i]);
 				
 				let pepEmbed = await getNewEmbed(pepperoniTag[i], personality, 'https://i.imgur.com/EEO45hR.png', `Good Morning Pepperoni!`, `${pepperoniTag[i].name} has woken up!`);
-				
 				await pepperoniOwner.send({ embeds: [pepEmbed] });	
+				await giveExperience(pepperoniTag[i], pepperoniOwner, true, 6);
 			}
 		}
 	}
