@@ -1,34 +1,37 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
-const { createNewPepperoni,testClean,testHappiness,testHunger,testSick} = require('../helper.js')
-
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { createNewPepperoni, getNewEmbed} = require('../helper.js')
+const { pepperoni } = require('../dbObjects.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stats')
 		.setDescription('Shows you Pepperoni\'s stats!'),
-	async execute(interaction, pepperoni, deaths) {
-		if(pepperoni.alive == 0){
-			await createNewPepperoni(pepperoni, interaction);
+	async execute(interaction, pepperoniTag, deaths) {
+		if(!pepperoniTag || pepperoniTag.alive == 0){
+			await createNewPepperoni(pepperoniTag, interaction);
 		}
 		else{
-			let birthday = new Date(pepperoni.startDate);
-			let hunger = testHunger(pepperoni.hunger);
-			let happiness = testHappiness(pepperoni.happiness);
-			let cleanliness = testClean(pepperoni.cleanliness);
-			let sickness = testSick(pepperoni.sick);
+			if(pepperoniTag.alive == 0){
+				await interaction.reply({content:'No Pepperonis are alive!',ephemeral: true});
+				return;
+			}
+			let birthday = new Date(pepperoniTag.startDate);
+			let personality = await pepperoniTag.getPersonality(pepperoniTag);
+			let pepEmbed = await getNewEmbed(pepperoniTag, personality, 'https://www.imgur.com/PRcSnWE.png', `${pepperoniTag.name} Stats`, `${pepperoniTag.name}, Gen. ${pepperoniTag.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`);
+			
+			await interaction.reply({embeds:[pepEmbed]});
+			let stats = await pepperoniTag.getStats(pepperoniTag);
 
-			const pepEmbed = new MessageEmbed()
+			let statEmbed = new EmbedBuilder()
 				.setColor('#F099C8')
-				.setTitle(`${pepperoni.name} Stats`)
-				.setDescription(`${pepperoni.name}, Gen. ${pepperoni.generation}. Born on ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()}`)
-				.setThumbnail('https://i.imgur.com/PRcSnWE.png')
+				.setTitle('Stats')
 				.addFields(
-					{name:`Hunger`, value:`${hunger}`, inline:true},
-					{name:`Happiness`, value:`${happiness}`, inline:true},
-					{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
-					{name:`Sickness`, value:`${sickness}`, inline:true},
+					{name:`Level`, value:`${stats.level}`, inline:true},
+					{name:`Experience`, value:`${stats.experience}/${stats.nextLevel}`, inline:true},
+					{name:`Fluffliness`, value:`${stats.fluffliness}`, inline:true},
+					{name:`Cuteness`, value:`${stats.cuteness}`, inline:true},
+					{name:`Adoration`, value:`${stats.adoration}`, inline:true},
 				);
-				interaction.reply({embeds:[pepEmbed]});
+			await interaction.followUp({embeds:[statEmbed]});
 		}
 	},
 };

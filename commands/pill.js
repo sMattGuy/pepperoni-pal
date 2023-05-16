@@ -1,43 +1,33 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { createNewPepperoni, hasDied,testClean,testHappiness,testHunger,testSick } = require('../helper.js');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
+const { giveExperience, createNewPepperoni, hasDied, getNewEmbed, checkPepperoniSleeping } = require('../helper.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('pill')
 		.setDescription('Give pepperoni a pill when he\'s feeling sick!'),
 	async execute(interaction, pepperoni, deaths) {
-		if(pepperoni.alive == 0){
+		if(!pepperoni || pepperoni.alive == 0){
 			await createNewPepperoni(pepperoni, interaction);
 		}
 		else{
 			if(pepperoni.sick == 0){
-				interaction.reply(`Pepperoni isn't sick, so he doesn't need medicine!`);
+				interaction.reply({content:`Pepperoni isn't sick, so he doesn't need medicine!`,ephemeral:true});
 			}
 			else{
+				let personality = await pepperoni.getPersonality(pepperoni);
+				
 				pepperoni.sick = 0;
 				pepperoni.hunger += 1;
+				if(personality.hungerMod > 0)
+					pepperoni.hunger += 1;
+				if(personality.hungerMod < 0)
+					pepperoni.hunger -= 1;
 				
-				//get flavor text for pepperoni
-				let hunger = testHunger(pepperoni.hunger);
-				let happiness = testHappiness(pepperoni.happiness);
-				let cleanliness = testClean(pepperoni.cleanliness);
-				let sickness = testSick(pepperoni.sick);
-				//design embed
-				const pepEmbed = new MessageEmbed()
-					.setColor('#F099C8')
-					.setTitle(`Get well soon ${pepperoni.name}!`)
-					.setDescription(`${pepperoni.name} took the cheese pill and feels better!`)
-					.setThumbnail('https://i.imgur.com/K1q6bKC.png')
-					.addFields(
-						{name:`Hunger`, value:`${hunger}`, inline:true},
-						{name:`Happiness`, value:`${happiness}`, inline:true},
-						{name:`Cleanliness`, value:`${cleanliness}`, inline:true},
-						{name:`Sickness`, value:`${sickness}`, inline:true},
-					);
-				await interaction.reply({ embeds: [pepEmbed] });	
+				let pepEmbed = await getNewEmbed(pepperoni, personality, 'https://www.imgur.com/K1q6bKC.png', `Get well soon ${pepperoni.name}!`, `${pepperoni.name} took the cheese pill and feels better!`);
+				await interaction.reply({ embeds: [pepEmbed] });
+				await giveExperience(pepperoni, interaction, false, 5);
+				await pepperoni.save();
 			}
 		}
-		await hasDied(pepperoni, interaction, false, interaction.user.username, deaths);
 	},
 };

@@ -1,38 +1,28 @@
 module.exports = (sequelize, DataTypes) => {
-	return sequelize.define('pepperoni', {
+	return sequelize.define('personality', {
 		id: {
 			type: DataTypes.INTEGER,
 			defaultValue: 1,
 			primaryKey: true,
 		},
-		alive: {
-			type: DataTypes.BOOLEAN,
-		},
 		name: {
 			type: DataTypes.STRING,
 		},
-		generation: {
+		hungerMod: {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
 		},
-		startDate: {
+		happinessMod: {
 			type: DataTypes.INTEGER,
+			defaultValue: 0,
 		},
-		hunger: {
+		cleanlinessMod: {
 			type: DataTypes.INTEGER,
+			defaultValue: 0,
 		},
-		happiness: {
+		sickMod: {
 			type: DataTypes.INTEGER,
-		},
-		cleanliness: {
-			type: DataTypes.INTEGER,
-		},
-		sick: {
-			type: DataTypes.INTEGER,
-		},
-		personality: {
-			type: DataTypes.INTEGER,
-			defaultValue: 1,
+			defaultValue: 0,
 		},
 	}, {
 		timestamps: false,

@@ -1,6 +1,4 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-const { Formatters } = require('discord.js');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { SlashCommandBuilder, codeBlock } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -17,15 +15,15 @@ module.exports = {
 				let birthday = new Date(pepDeaths[i].birth);
 				let potMessage = `${pepDeaths[i].name}, Gen. ${pepDeaths[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${pepDeaths[i].cause}, because of ${pepDeaths[i].person}\n`;
 				if(potMessage.length + message.length >= 2000){
-					interaction.followUp({content:Formatters.codeBlock(message)});
+					await interaction.followUp({content:codeBlock(message)});
 					message = "";
 				}
 				message += potMessage;
 			}
-			interaction.followUp({content:Formatters.codeBlock(message)});
+			await interaction.followUp({content:codeBlock(message)});
 		}
 		else{
-			interaction.reply(`No Pepperoni has died! You're doing great!`);
+			await interaction.reply({content:`No Pepperoni has died! You're doing great!`});
 		}
 	},
 };
