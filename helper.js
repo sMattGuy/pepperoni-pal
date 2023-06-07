@@ -79,7 +79,7 @@ async function hasDied(pepperoniTag, interaction, hourly, deaths){
 		const pepEmbed = new EmbedBuilder()
 			.setColor('#FF2222')
 			.setTitle('Game Over!')
-			.setDescription(`${pepperoniTag.name} has suffered from ${results.cause}. With his death, the thread of prophecy is severed. Resurect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
+			.setDescription(`${pepperoniTag.name} has suffered from ${results.cause}. With his death, the thread of prophecy is severed. Resurrect a new Pepperoni to restore the weave of fate, or persist in the doomed world you have created.`)
 			.setThumbnail(deathMap.get(results.cause));
 		
 		if(hourly){
