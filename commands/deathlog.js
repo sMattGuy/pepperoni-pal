@@ -16,13 +16,12 @@ module.exports = {
 		await interaction.deferReply();
 		if(gen_num == -1){
 			results = await deaths.findAll({limit: 5, order:[['id','DESC']]});
-			let pepDeaths = JSON.parse(JSON.stringify(results, null, 2));
-			if(pepDeaths.length != 0){
+			if(results.length != 0){
 				let message = "Pepperoni Deaths\n";
-				for(let i=0;i<pepDeaths.length;i++){
-					let deathDay = new Date(pepDeaths[i].time);
-					let birthday = new Date(pepDeaths[i].birth);
-					message += `${pepDeaths[i].name}, Gen. ${pepDeaths[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${pepDeaths[i].cause}, because of ${pepDeaths[i].person}\n`;
+				for(let i=0;i<results.length;i++){
+					let deathDay = new Date(results[i].time);
+					let birthday = new Date(results[i].birth);
+					message += `${results[i].name}, Gen. ${results[i].generation}: ${birthday.getMonth()+1}/${birthday.getDate()}/${birthday.getFullYear()} - ${deathDay.getMonth()+1}/${deathDay.getDate()}/${deathDay.getFullYear()}  died from: ${results[i].cause}, because of ${results[i].person}\n`;
 				}
 				await interaction.editReply({content:codeBlock(message)});
 			}
